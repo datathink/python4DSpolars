@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.20">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Data Transformation – Python for Data Science</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -78,14 +75,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-3512cbed9e2527d986e9b0b56d261405.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-7038d31925839fcd0b50e6237b0ff245.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-3512cbed9e2527d986e9b0b56d261405.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b82ea56535f386973218045d6b68731c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-6cd122c916d650f3a191256d27f1424d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-b82ea56535f386973218045d6b68731c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-e165a794f04406688339ef99d26b34d0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-db266c2195edc5d49b552008bac0d953.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-e165a794f04406688339ef99d26b34d0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -127,7 +124,8 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 
 <meta name="twitter:title" content="Data Transformation – Python for Data Science">
 <meta name="twitter:description" content="">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="./dataframe_illustration.svg">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-sidebar docked quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -608,11 +606,11 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
   <ul class="collapse">
   <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
   </ul></li>
-  <li><a href="#pandas-basics" id="toc-pandas-basics" class="nav-link" data-scroll-target="#pandas-basics"><strong>pandas</strong> basics</a></li>
+  <li><a href="#polars-basics" id="toc-polars-basics" class="nav-link" data-scroll-target="#polars-basics"><strong>polars</strong> basics</a></li>
   <li><a href="#manipulating-rows-in-data-frames" id="toc-manipulating-rows-in-data-frames" class="nav-link" data-scroll-target="#manipulating-rows-in-data-frames">Manipulating Rows in Data Frames</a>
   <ul class="collapse">
   <li><a href="#accessing-rows" id="toc-accessing-rows" class="nav-link" data-scroll-target="#accessing-rows">Accessing Rows</a></li>
-  <li><a href="#filtering-rows-with-query" id="toc-filtering-rows-with-query" class="nav-link" data-scroll-target="#filtering-rows-with-query">Filtering rows with query</a></li>
+  <li><a href="#filtering-rows" id="toc-filtering-rows" class="nav-link" data-scroll-target="#filtering-rows">Filtering rows</a></li>
   <li><a href="#re-arranging-rows" id="toc-re-arranging-rows" class="nav-link" data-scroll-target="#re-arranging-rows">Re-arranging Rows</a></li>
   <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises">Exercises</a></li>
   </ul></li>
@@ -621,18 +619,6 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
   <li><a href="#creating-new-columns" id="toc-creating-new-columns" class="nav-link" data-scroll-target="#creating-new-columns">Creating New Columns</a></li>
   <li><a href="#accessing-columns" id="toc-accessing-columns" class="nav-link" data-scroll-target="#accessing-columns">Accessing Columns</a></li>
   <li><a href="#renaming-columns" id="toc-renaming-columns" class="nav-link" data-scroll-target="#renaming-columns">Renaming Columns</a></li>
-  <li><a href="#re-ordering-columns" id="toc-re-ordering-columns" class="nav-link" data-scroll-target="#re-ordering-columns">Re-ordering Columns</a></li>
-  </ul></li>
-  <li><a href="#review-of-how-to-access-rows-columns-and-values" id="toc-review-of-how-to-access-rows-columns-and-values" class="nav-link" data-scroll-target="#review-of-how-to-access-rows-columns-and-values">Review of How to Access Rows, Columns, and Values</a>
-  <ul class="collapse">
-  <li><a href="#column-and-row-exercises" id="toc-column-and-row-exercises" class="nav-link" data-scroll-target="#column-and-row-exercises">Column and Row Exercises</a></li>
-  </ul></li>
-  <li><a href="#grouping-changing-the-index-and-applying-summary-statistics" id="toc-grouping-changing-the-index-and-applying-summary-statistics" class="nav-link" data-scroll-target="#grouping-changing-the-index-and-applying-summary-statistics">Grouping, changing the index, and applying summary statistics</a>
-  <ul class="collapse">
-  <li><a href="#grouping-and-aggregating" id="toc-grouping-and-aggregating" class="nav-link" data-scroll-target="#grouping-and-aggregating">Grouping and Aggregating</a></li>
-  <li><a href="#grouping-by-multiple-variables" id="toc-grouping-by-multiple-variables" class="nav-link" data-scroll-target="#grouping-by-multiple-variables">Grouping by multiple variables</a></li>
-  <li><a href="#grouping-and-transforming" id="toc-grouping-and-transforming" class="nav-link" data-scroll-target="#grouping-and-transforming">Grouping and Transforming</a></li>
-  <li><a href="#groupby-exercises" id="toc-groupby-exercises" class="nav-link" data-scroll-target="#groupby-exercises">Groupby Exercises</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.dev/aeturrell/python4DS/blob/main/data-transform.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/aeturrell/python4DS/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -663,36 +649,48 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>It’s very rare that data arrive in exactly the right form you need. Often, you’ll need to create some new variables or summaries, or maybe you just want to rename the variables or reorder the observations to make the data a little easier to work with.</p>
-<p>You’ll learn how to do all that (and more!) in this chapter, which will introduce you to data transformation using the <strong>pandas</strong> package and a new dataset on flights that departed New York City in 2013.</p>
+<p>You’ll learn how to do all that (and more!) in this chapter, which will introduce you to data transformation using the <strong>polars</strong> package and a new dataset on flights that departed New York City in 2013.</p>
 <p>The goal of this chapter is to give you an overview of all the key tools for transforming a data frame, a special kind of object that holds tabular data.</p>
 <p>We’ll come back these functions in more detail in later chapters, as we start to dig into specific types of data (e.g.&nbsp;numbers, strings, dates).</p>
 <section id="prerequisites" class="level3">
 <h3 class="anchored" data-anchor-id="prerequisites">Prerequisites</h3>
-<p>In this chapter we’ll focus on the <strong>pandas</strong> package, one of the most widely used tools for data science. You’ll need to ensure you have <strong>pandas</strong> installed. To do this, you can run</p>
+<p>In this chapter we’ll focus on the <strong>polars</strong> package, one of the most widely used tools for data science. You’ll need to ensure you have <strong>polars</strong> installed. To do this, you can run</p>
 <div id="04dcb195" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>If this command fails, you don’t have <strong>pandas</strong> installed. Open up the terminal in Visual Studio Code (Terminal -&gt; New Terminal), <code>cd</code> to the folder you are working in, and type in <code>uv add pandas</code>.</p>
-<p>Furthermore, if you wish to check which version of <strong>pandas</strong> you’re using, it’s</p>
+<p>If this command fails, you don’t have <strong>polars</strong> installed. Open up the terminal in Visual Studio Code (Terminal -&gt; New Terminal), <code>cd</code> to the folder you are working in, and type in <code>uv add polars</code>.</p>
+<p>Furthermore, if you wish to check which version of <strong>polars</strong> you’re using, it’s</p>
 <div id="09eb2e2e" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pd.__version__</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pl.__version__</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>You’ll also need the data. Most of the time, data will need to be loaded from a file or the internet. These data are no different, but one of the amazing things about <strong>pandas</strong> is how many different types of data it can load, including from files on the internet.</p>
+<p>You’ll also need the data. Most of the time, data will need to be loaded from a file or the internet. These data are no different, but one of the amazing things about <strong>polars</strong> is how many different types of data it can load, including from files on the internet.</p>
 <p>The data is around 50MB in size so you will need a good internet connection or a little patience for it to download.</p>
 <p>Let’s download the data:</p>
 <div id="eff283e8" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/byuidatascience/data4python4ds/master/data-raw/flights/flights.csv"</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>flights <span class="op">=</span> pd.read_csv(url)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> io</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/byuidatascience/data4python4ds/master/data-raw/flights/flights.csv"</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>resp <span class="op">=</span> requests.get(url, timeout<span class="op">=</span><span class="dv">60</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>resp.raise_for_status()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>flights <span class="op">=</span> pl.read_csv(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    io.BytesIO(resp.content),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    null_values<span class="op">=</span>[<span class="st">"NA"</span>],</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    truncate_ragged_lines<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    ignore_errors<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>If the above code worked, then you’ve downloaded the data in CSV format and put it in a data frame. Let’s look at the first few rows using the <code>.head()</code> function that works on all <strong>pandas</strong> data frames.</p>
+<p>If the above code worked, then you’ve downloaded the data in CSV format and put it in a data frame. Let’s look at the first few rows using the <code>.head()</code> function that works on all <strong>polars</strong> data frames.</p>
 <div id="39f99d76" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>flights.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>To get more general information on the columns, the data types (<code>dtypes</code>) of the columns, and the size of the dataset, use <code>.info()</code>.</p>
+<p>To get more general information on the columns, the data types (<code>dtypes</code>) of the columns, and the size of the dataset, use <code>.glimpse()</code>.</p>
 <div id="95dea97b" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>flights.info()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>flights.glimpse(max_items_per_column<span class="op">=</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>You might have noticed the short abbreviations that appear in the <code>Dtypes</code> column. These tell you the type of the values in their respective columns: <code>int64</code> is short for integer (eg whole numbers) and <code>float64</code> is short for double-precision floating point number (these are real numbers). <code>object</code> is a bit of a catch all category for any data type that <strong>pandas</strong> is not really confident about inferring. Although not found here, other data types include <code>string</code> for text and <code>datetime</code> for combinations of a date and time.</p>
+<p>You might have noticed the short abbreviations that appear in the <code>dtype</code> column. These tell you the type of the values in their respective columns: <code>i64</code> is short for integer (eg whole numbers) and <code>f64</code> is short for double-precision floating point number (these are real numbers). <strong>polars</strong> has an <code>object</code> data type which allows storing arbitrary Python objects, but this makes you lose performance benefits, as <strong>polars</strong> is <strong>strictly typed</strong>. Although not found here, other data types include <code>str</code> for text and <code>datetime</code> for combinations of a date and time.</p>
 <p>The table below gives some of the most common data types you are likely to encounter.</p>
 <table class="caption-top table">
 <thead>
@@ -703,50 +701,65 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">float64</td>
+<td style="text-align: center;">Float64</td>
 <td style="text-align: center;">real numbers</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">category</td>
+<td style="text-align: center;">Categorical</td>
 <td style="text-align: center;">categories</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">datetime64</td>
-<td style="text-align: center;">date times</td>
+<td style="text-align: center;">Datetime</td>
+<td style="text-align: center;">date and time</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">int64</td>
-<td style="text-align: center;">integers</td>
+<td style="text-align: center;">Date</td>
+<td style="text-align: center;">date</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;">True or False</td>
+<td style="text-align: center;">Int64</td>
+<td style="text-align: center;">integers</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">string</td>
+<td style="text-align: center;">Boolean</td>
+<td style="text-align: center;">True or False</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">String</td>
 <td style="text-align: center;">text</td>
 </tr>
 </tbody>
 </table>
 <p>The different column data types are important because the operations you can perform on a column depend so much on its “type”; for example, you can remove all punctuation from strings while you can multiply ints and floats.</p>
-<p>We would like to work with the <code>"time_hour"</code> variable in the form of a datetime; fortunately, <strong>pandas</strong> makes it easy to perform that conversion on that specific column</p>
+<p>We would like to work with the <code>"time_hour"</code> variable in the form of a datetime; fortunately, <strong>polars</strong> makes it easy to perform that conversion on that specific column</p>
 <div id="ffb275b0" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>flights[<span class="st">"time_hour"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>flights.get_column(<span class="st">"time_hour"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="88a8b983" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>flights[<span class="st">"time_hour"</span>] <span class="op">=</span> pd.to_datetime(flights[<span class="st">"time_hour"</span>], <span class="bu">format</span><span class="op">=</span><span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st">T%H:%M:%SZ"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>flights.with_columns(pl.col(<span class="st">"time_hour"</span>).<span class="bu">str</span>.to_datetime())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
-<section id="pandas-basics" class="level2">
-<h2 class="anchored" data-anchor-id="pandas-basics"><strong>pandas</strong> basics</h2>
-<p><strong>pandas</strong> is a really comprehensive package, and this book will barely scratch the surface of what it can do. But it’s built around a few simple ideas that, once they’ve clicked, make life a lot easier.</p>
-<p>Let’s start with the absolute basics. The most basic pandas object is DataFrame. A DataFrame is a 2-dimensional data structure that can store data of different types (including characters, integers, floating point values, categorical data, even lists) in columns. It is made up of rows and columns (with each row-column cell containing a value), plus two bits of contextual information: the index (which carries information about each row) and the column names (which carry information about each column).</p>
-<p><img src="https://pandas.pydata.org/docs/_images/01_table_dataframe.svg" class="img-fluid"></p>
-<p>Perhaps the most important notion to have about <strong>pandas</strong> data frames is that they are built around an index that sits on the left-hand side of the data frame. Every time you perform an operation on a data frame, you need to think about how it might or might not affect the index; or, put another way, whether you want to modify the index.</p>
-<p>Let’s see a simple example of this with a made-up data frame:</p>
+<section id="polars-basics" class="level2">
+<h2 class="anchored" data-anchor-id="polars-basics"><strong>polars</strong> basics</h2>
+<p><strong>polars</strong> is a really comprehensive package, and this book will barely scratch the surface of what it can do. But it’s built around a few simple ideas that, once they’ve clicked, make life a lot easier.</p>
+<p>Let’s start with the absolute basics. The most basic polars object is DataFrame. A DataFrame is a 2-dimensional data structure that can store data of different types (including characters, integers, floating point values, categorical data, even lists) in columns. It is made up of rows and columns (with each row-column cell containing a value), plus contextual information: column names (which carry information about each column).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note: If you’re coming from <strong>pandas</strong>, be aware that <strong>polars</strong> does not use an index column and each row is indexed by its integer position in the table.</p>
+</div>
+</div>
+<p><img src="./dataframe_illustration.svg" class="img-fluid"></p>
 <div id="1b6bd8b1" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pl.DataFrame(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>{</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"col0"</span>: [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"col1"</span>: [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
@@ -754,26 +767,26 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"col3"</span>: [<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"b"</span>, <span class="st">"a"</span>],</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"col4"</span>: [<span class="st">"alpha"</span>, <span class="st">"gamma"</span>, <span class="st">"gamma"</span>, <span class="st">"gamma"</span>],</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    },</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>[<span class="st">"row"</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">4</span>)],</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>You can see there are 5 columns (named <code>"col0"</code> to <code>"col4"</code>) and that the index consists of four entries named <code>"row0"</code> to <code>"row3"</code>.</p>
-<p>A second key point you should know is that the operations on a <strong>pandas</strong> data frame can be chained together. We need not perform one assignment per line of code; we can actually do multiple assignments in a single command.</p>
+<p>You can see there are 5 columns (named <code>"col0"</code> to <code>"col4"</code>).</p>
+<p>A second key point you should know is that the operations on a <strong>polars</strong> data frame can be chained together. We need not perform one assignment per line of code; we can actually do multiple assignments in a single command.</p>
 <p>Let’s see an example of this. We’re going to string together four operations:</p>
 <ol type="1">
-<li>we will use <code>query()</code> to find only the rows where the destination <code>"dest"</code> column has the value <code>"IAH"</code>. This doesn’t change the index, it only removes irrelevant rows. In effect, this step removes rows we’re not interested in.</li>
-<li>we will use <code>groupby()</code> to group rows by the year, month, and day (we pass a list of columns to the <code>groupby()</code> function). This step changes the index; the new index will have three columns in that track the year, month, and day. In effect, this step changes the index.</li>
-<li>we will choose which columns we wish to keep after the <code>groupby()</code> operation by passing a list of them to a set of square brackets (the double brackets are because it’s a list within a data frame). Here we just want one column, <code>"arr_delay"</code>. This doesn’t affect the index. In effect, this step removes columns we’re not interested in.</li>
-<li>finally, we must specify what <code>groupby()</code> operation we wish to apply; when aggregating the information in multiple rows down to one row, we need to say how that information should be aggregated. In this case, we’ll use the <code>mean()</code>. In effect, this step applies a statistic to the variable(s) we selected earlier, across the groups we created earlier.</li>
+<li>we will use <code>filter()</code> to find only the rows where the destination <code>"dest"</code> column has the value <code>"IAH"</code>. We use the <code>pl.col()</code> expression to select the column for filtering condition. In effect, this step removes rows we’re not interested in.</li>
+<li>we will use <code>group_by()</code> to group rows by the year, month, and day (we pass a list of columns to the <code>group_by()</code> function).</li>
+<li>we will choose which columns to perform aggregation on after the <code>group_by()</code> operation by using the <code>pl.col()</code> expression inside <code>agg()</code>, to select the column. Here we just want one column, <code>"arr_delay"</code>. In effect, this step removes columns we’re not interested in.</li>
+<li>finally, we must specify what <code>agg()</code> operation we wish to apply; when aggregating the information in multiple rows down to one row, we need to say how that information should be aggregated. In this case, we’ll use the <code>mean()</code>. In effect, this step applies a statistic to the variable(s) we selected earlier, across the groups we created earlier.</li>
 </ol>
 <div id="cb114649" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(flights.query(<span class="st">"dest == 'IAH'"</span>).groupby([<span class="st">"year"</span>, <span class="st">"month"</span>, <span class="st">"day"</span>])[[<span class="st">"arr_delay"</span>]].mean())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>flights.<span class="bu">filter</span>(pl.col(<span class="st">"dest"</span>) <span class="op">==</span> <span class="st">"IAH"</span>).group_by([<span class="st">"year"</span>, <span class="st">"month"</span>, <span class="st">"day"</span>]).agg(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"arr_delay"</span>).mean()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>You can see here that we’ve created a new data frame with a new index. To do it, we used four key operations:</p>
+<p>You can see here that we’ve created a new data frame. To do it, we used three key operations:</p>
 <ol type="1">
 <li>manipulating rows</li>
-<li>manipulating the index</li>
 <li>manipulating columns</li>
 <li>applying statistics</li>
 </ol>
@@ -786,66 +799,87 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <div id="3958ddb5" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pl.DataFrame(</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>np.reshape(<span class="bu">range</span>(<span class="dv">36</span>), (<span class="dv">6</span>, <span class="dv">6</span>)),</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>[<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>, <span class="st">"e"</span>, <span class="st">"f"</span>],</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="st">"col"</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>)],</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    dtype<span class="op">=</span><span class="bu">float</span>,</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"col6"</span>] <span class="op">=</span> [<span class="st">"apple"</span>, <span class="st">"orange"</span>, <span class="st">"pineapple"</span>, <span class="st">"mango"</span>, <span class="st">"kiwi"</span>, <span class="st">"lemon"</span>]</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    schema<span class="op">=</span>[<span class="st">"col"</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>)],</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>df.insert_column(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="dv">6</span>, pl.Series(<span class="st">"col6"</span>, [<span class="st">"apple"</span>, <span class="st">"orange"</span>, <span class="st">"pineapple"</span>, <span class="st">"mango"</span>, <span class="st">"kiwi"</span>, <span class="st">"lemon"</span>])</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="accessing-rows" class="level3">
 <h3 class="anchored" data-anchor-id="accessing-rows">Accessing Rows</h3>
-<p>To access a particular row directly, you can use <code>df.loc['rowname']</code> or <code>df.loc[['rowname1', 'rowname2']]</code> for two different rows.</p>
+<p>To access a particular row directly, you can get that by index (location in the data) or predicate/expression using <code>.row()</code>, which returns as a tuple. Remember that Python indices begin from zero, so to retrieve the first row by index you would use <code>.row(0)</code>:</p>
 <p>For example,</p>
 <div id="0c2faf83" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df.loc[[<span class="st">"a"</span>, <span class="st">"b"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gets the first row of the DataFrame</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>df.row(<span class="dv">0</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Gets the fifth row of the DataFrame</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>df.row(<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>But you can also access particular rows based on their location in the data frame using <code>.iloc</code>. Remember that Python indices begin from zero, so to retrieve the first row you would use <code>.iloc[0]</code>:</p>
+<p>We can also access particular rows based on a predicate using <code>.row()</code> with the <code>by_predicate</code> parameter.</p>
 <div id="9d34599b" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df.iloc[<span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df.row(by_predicate<span class="op">=</span>pl.col(<span class="st">"col6"</span>) <span class="op">==</span> <span class="st">"mango"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>This works for multiple rows too. Let’s grab the first and third rows (in positions 0 and 2) by passing a list of positions:</p>
+<p>To get the row as a dictionary instead of a tuple with a mapping of column names to row values, specify <code>named=True</code></p>
 <div id="9bf6313b" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df.iloc[[<span class="dv">0</span>, <span class="dv">2</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the first row of the DataFrame as a dictionary</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df.row(<span class="dv">0</span>, named<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the row where col6 is "mango" as a dictionary</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>df.row(by_predicate<span class="op">=</span>pl.col(<span class="st">"col6"</span>) <span class="op">==</span> <span class="st">"mango"</span>, named<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>There are other ways to access multiple rows that make use of <em>slicing</em> but we’ll leave that topic for another time.</p>
+<p>We can also access rows using the <code>.slice()</code> function. As the function name implies, we get a slice of the DataFrame. we can use this to get a single row or a number of rows. To use this, we give it an offset - a start index, negative indexing is supported to index from the bottom of the DataFrame - and a length of the slice. This returns a DataFrame</p>
+<div id="f7e8e892" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df.<span class="bu">slice</span>(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
-<section id="filtering-rows-with-query" class="level3">
-<h3 class="anchored" data-anchor-id="filtering-rows-with-query">Filtering rows with query</h3>
-<p>As with the flights example, we can also filter rows based on a condition using <code>query()</code>:</p>
+<section id="filtering-rows" class="level3">
+<h3 class="anchored" data-anchor-id="filtering-rows">Filtering rows</h3>
+<p>As with the flights example, we can also filter rows based on a condition using <code>filter()</code>:</p>
 <div id="54a9d2b1" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df.query(<span class="st">"col6 == 'kiwi' or col6 == 'pineapple'"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df.<span class="bu">filter</span>((pl.col(<span class="st">"col6"</span>) <span class="op">==</span> <span class="st">"kiwi"</span>) <span class="op">|</span> (pl.col(<span class="st">"col6"</span>) <span class="op">==</span> <span class="st">"pineapple"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>For numbers, you can also use the greater than and less than signs:</p>
 <div id="7849a962" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df.query(<span class="st">"col0 &gt; 6"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df.<span class="bu">filter</span>(pl.col(<span class="st">"col0"</span>) <span class="op">&gt;</span> <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>In fact, there are lots of options that work with <code>query()</code>: as well as <code>&gt;</code> (greater than), you can use <code>&gt;=</code> (greater than or equal to), <code>&lt;</code> (less than), <code>&lt;=</code> (less than or equal to), <code>==</code> (equal to), and <code>!=</code> (not equal to). You can also use the commands <code>and</code> as well as <code>or</code> to combine multiple conditions. Here’s an example of <code>and</code> from the <code>flights</code> data frame:</p>
+<p>In fact, there are lots of options that work with <code>filter()</code>: as well as <code>&gt;</code> (greater than), you can use <code>&gt;=</code> (greater than or equal to), <code>&lt;</code> (less than), <code>&lt;=</code> (less than or equal to), <code>==</code> (equal to), and <code>!=</code> (not equal to). You can also use operators <code>&amp;</code> as well as <code>|</code> to combine multiple conditions. Here’s an example of <code>&amp;</code> from the <code>flights</code> data frame:</p>
 <div id="c6dd919f" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Flights that departed on January 1</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>flights.query(<span class="st">"month == 1 and day == 1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Flights that departed on January 1</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>flights.<span class="bu">filter</span>((pl.col(<span class="st">"month"</span>) <span class="op">==</span> <span class="dv">1</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"day"</span>) <span class="op">&lt;=</span> <span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Note that equality is tested by <code>==</code> and <em>not</em> by <code>=</code>, because the latter is used for assignment.</p>
 </section>
 <section id="re-arranging-rows" class="level3">
 <h3 class="anchored" data-anchor-id="re-arranging-rows">Re-arranging Rows</h3>
-<p>Again and again, you will want to re-order the rows of your data frame according to the values in a particular column. <strong>pandas</strong> makes this very easy via the <code>.sort_values()</code> function. It takes a data frame and a set of column names to sort by. If you provide more than one column name, each additional column will be used to break ties in the values of preceding columns. For example, the following code sorts by the departure time, which is spread over four columns.</p>
-<div id="9d5f4270" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>flights.sort_values([<span class="st">"year"</span>, <span class="st">"month"</span>, <span class="st">"day"</span>, <span class="st">"dep_time"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Again and again, you will want to re-order the rows of your data frame according to the values in a particular column. <strong>polars</strong> makes this very easy via the <code>.sort()</code> function. You can sort by single or multiple column names and also by expressions. If you provide more than one column name, each additional column will be used to break ties in the values of preceding columns. For example, the following code sorts by the departure time, which is spread over four columns.</p>
+<div id="395c9c62" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>flights.sort(<span class="st">"dep_time"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>You can use the keyword argument <code>ascending=False</code> to re-order by a column or columns in descending order. For example, this code shows the most delayed flights:</p>
+<div id="9d5f4270" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort by multiple columns by passing a list of columns.</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>flights.sort([<span class="st">"year"</span>, <span class="st">"month"</span>, <span class="st">"day"</span>, <span class="st">"dep_time"</span>])</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Or use positional arguments to sort by multiple columns in the same way.</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>flights.sort(<span class="st">"year"</span>, <span class="st">"month"</span>, <span class="st">"day"</span>, <span class="st">"dep_time"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>You can use the keyword argument <code>descending=True</code> to re-order by a column or columns in descending order. For example, this code shows the most delayed flights:</p>
 <div id="483acdc1" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>flights.sort_values(<span class="st">"dep_delay"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>flights.sort(<span class="st">"dep_delay"</span>, descending<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="80bf3df7" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>flights.sort([<span class="st">"dep_delay"</span>, <span class="st">"arr_delay"</span>], descending<span class="op">=</span>[<span class="va">True</span>, <span class="va">False</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>You can of course combine all of the above row manipulations to solve more complex problems. For example, we could look for the top three destinations of the flights that were most delayed on arrival that left on roughly on time:</p>
 <div id="a939f3c2" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    flights.query(<span class="st">"dep_delay &lt;= 10 and dep_delay &gt;= -10"</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .sort_values(<span class="st">"arr_delay"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    .iloc[[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>]]</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    flights.<span class="bu">filter</span>((pl.col(<span class="st">"dep_delay"</span>) <span class="op">&lt;=</span> <span class="dv">10</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"dep_delay"</span>) <span class="op">&gt;=</span> <span class="op">-</span><span class="dv">10</span>))</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .sort(<span class="st">"arr_delay"</span>, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">3</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="exercises" class="level3">
@@ -863,7 +897,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <li><p>Sort <code>flights</code> to find the flights with longest departure delays.</p></li>
 <li><p>Sort <code>flights</code> to find the fastest flights</p></li>
 <li><p>Which flights traveled the farthest?</p></li>
-<li><p>Does it matter what order you used <code>query()</code> and <code>sort_values()</code> in if you’re using both? Why/why not? Think about the results and how much work the functions would have to do.</p></li>
+<li><p>Does it matter what order you used <code>filter()</code> and <code>sort()</code> in if you’re using both? Why/why not? Think about the results and how much work the functions would have to do.</p></li>
 </ol>
 </section>
 </section>
@@ -885,15 +919,15 @@ Note
 </div>
 <section id="creating-new-columns" class="level3">
 <h3 class="anchored" data-anchor-id="creating-new-columns">Creating New Columns</h3>
-<p>Let’s now move on to creating new columns, either using new information or from existing columns. Given a data frame, <code>df</code>, creating a new column with the same value repeated is as easy as using square brackets with a string (text enclosed by quotation marks) in.</p>
+<p>Let’s now move on to creating new columns, either using new information or from existing columns. Given a data frame, <code>df</code>, creating a new column with the same value repeated is done by using <code>.with_columns()</code>, with an expression assigned to a column name. Here we use <code>pl.lit()</code> which returns an expression representing a literal value, 5 in our case.</p>
 <div id="86827cf9" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"new_column0"</span>] <span class="op">=</span> <span class="dv">5</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.with_columns(new_column0<span class="op">=</span>pl.lit(<span class="dv">5</span>))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>If we do the same operation again, but with a different right-hand side, it will overwrite what was already in that column. Let’s see this with an example where we put different values in each position by assigning a list to the new column.</p>
+<p>If we do the same operation again, but this time assigning a <strong><em>Series</em></strong> to the same column, it will overwrite what was already in that column. A <strong><em>Series</em></strong> repesents a single column in a Polars DataFrame. Let’s see this with an example where we put different values in each position by assigning a list to the new column.</p>
 <div id="0ab01f9d" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"new_column0"</span>] <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>]</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.with_columns(new_column0<span class="op">=</span>pl.Series([<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>]))</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled" title="Exercise">
 <div class="callout-header d-flex align-content-center">
@@ -908,190 +942,142 @@ Note
 <p>What happens if you try to use assignment where the right-hand side values are longer or shorter than the length of the data frame?</p>
 </div>
 </div>
-<p>By passing a list within the square brackets, we can actually create more than one new column:</p>
+<p>We can actually use <code>.with_columns</code> to create more than one new column:</p>
 <div id="fff10e83" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df[[<span class="st">"new_column1"</span>, <span class="st">"new_column2"</span>]] <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">6</span>]</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.with_columns(new_column1<span class="op">=</span>pl.lit(<span class="dv">5</span>), new_column2<span class="op">=</span>pl.lit(<span class="dv">6</span>))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Very often, you will want to create a new column that is the result of an operation on existing columns. There are a couple of ways to do this. The ‘stand-alone’ method works in a similar way to what we’ve just seen except that we refer to the data frame on the right-hand side of the assignment statement too:</p>
+<p>Very often, you will want to create a new column or modify a column that is the result of an operation on existing columns. There are a couple of ways to do this. The ‘stand-alone’ method works in a similar way to what we’ve just seen except that we refer to the data frame on the right-hand side of the assignment statement too:</p>
 <div id="82477100" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"new_column3"</span>] <span class="op">=</span> df[<span class="st">"col0"</span>] <span class="op">-</span> df[<span class="st">"new_column0"</span>]</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df.with_columns(new_column2<span class="op">=</span>pl.col(<span class="st">"col0"</span>) <span class="op">-</span> pl.col(<span class="st">"new_column0"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The other way to do this involves an ‘assign()’ statement and is used when you wish to chain multiple steps together (like we saw earlier). These use a special syntax called a ‘lambda’ statement, which (here at least) just provides a way of specifying to <strong>pandas</strong> that we wish to perform the operation on every row. Below is an example using the flights data. You should note though that the word ‘row’ below is a dummy; you could replace it with any variable name (for example, <code>x</code>) but <code>row</code> makes what is happening a little bit clearer.</p>
+<p>We can use <code>.alias()</code> with an expression to assign column names, when creating new columns. We can chain multiple expressions together with <code>.with_columns()</code>, which would create multiple new columns with the names assigned to <code>.alias()</code>.</p>
 <div id="55645bdd" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    flights.assign(</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>        gain<span class="op">=</span><span class="kw">lambda</span> row: row[<span class="st">"dep_delay"</span>] <span class="op">-</span> row[<span class="st">"arr_delay"</span>],</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>        speed<span class="op">=</span><span class="kw">lambda</span> row: row[<span class="st">"distance"</span>] <span class="op">/</span> row[<span class="st">"air_time"</span>] <span class="op">*</span> <span class="dv">60</span>,</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A lambda function is like any normal function in Python except that it has no name, and it tends to be contained in one line of code. A lambda function is made of an argument, a colon, and an expression, like the following lambda function that multiplies an input by three.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">lambda</span> x: x<span class="op">*</span><span class="dv">3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>flights.with_columns(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    (pl.col(<span class="st">"dep_delay"</span>) <span class="op">-</span> pl.col(<span class="st">"arr_delay"</span>)).alias(<span class="st">"gain"</span>),</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    (pl.col(<span class="st">"distance"</span>) <span class="op">/</span> pl.col(<span class="st">"air_time"</span>) <span class="op">*</span> <span class="dv">60</span>).alias(<span class="st">"speed"</span>),</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="accessing-columns" class="level3">
 <h3 class="anchored" data-anchor-id="accessing-columns">Accessing Columns</h3>
 <p>Just as with selecting rows, there are many options and ways to select the columns to operate on. The one with the simplest syntax is the name of the data frame followed by square brackets and the column name (as a string)</p>
 <div id="4643b978" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"col0"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"col0"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>If you need to select <em>multiple</em> columns, you cannot just pass a string into <code>df[...]</code>; instead you need to pass an object that is iterable (and so have multiple items). The most straight forward way to select multiple columns is to pass a <em>list</em>. Remember, lists comes in square brackets so we’re going to see something with repeated square brackets: one for accessing the data frame’s innards and one for the list.</p>
 <div id="219852d8" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df[[<span class="st">"col0"</span>, <span class="st">"new_column0"</span>, <span class="st">"col2"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df[[<span class="st">"col0"</span>, <span class="st">"new_column0"</span>, <span class="st">"col2"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>If you want to access particular rows at the same time, use the <code>.loc</code> access function:</p>
+<p>We can also use <code>.select()</code> on the data frame to select columns, passing a single string to select a single column or an iterable, like a <em>list</em>, <em>positional arguments</em> or <em>keyword arguments</em>, to select multiple columns. <strong>Using <em>keyword arguments</em> renames the columns in the output</strong></p>
+<div id="1bc0cd22" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># selecting a single column</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>df.select(<span class="st">"col0"</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Using positional arguments to select multiple columns</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>df.select(<span class="st">"col0"</span>, <span class="st">"new_column0"</span>, <span class="st">"col2"</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Using keyword arguments to rename columns in the output</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>df.select(col1<span class="op">=</span><span class="st">"col0"</span>, col2<span class="op">=</span><span class="st">"new_column0"</span>, col3<span class="op">=</span><span class="st">"col2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Expressions are also accepted</p>
+<div id="ed447fb7" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df.select(pl.col(<span class="st">"col0"</span>), pl.col(<span class="st">"new_column0"</span>) <span class="op">+</span> <span class="dv">2</span>, pl.col(<span class="st">"col2"</span>) <span class="op">*</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>If we want to access particular rows at the same time, we can chain <code>.filter()</code> or <code>.slice()</code> to the <code>.select()</code> function:</p>
 <div id="eabfd313" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df.loc[[<span class="st">"a"</span>, <span class="st">"b"</span>], [<span class="st">"col0"</span>, <span class="st">"new_column0"</span>, <span class="st">"col2"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>df.select(<span class="st">"col0"</span>, <span class="st">"new_column0"</span>, <span class="st">"col2"</span>).<span class="bu">slice</span>(<span class="dv">0</span>, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>And, just as with rows, we can access columns by their position using <code>.iloc</code> (where <code>:</code> stands in for ‘any row’).</p>
-<div id="b6ae1605" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df.iloc[:, [<span class="dv">0</span>, <span class="dv">1</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Sometimes, we’ll want to select columns based on the <em>type</em> of data that they hold. For this, we can call <strong>polars</strong> data types with an expression inside <code>.select()</code>. Let’s use this to select all columns with integers in the flights data.</p>
+<div id="aed67406" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>flights.select(pl.col(pl.Int64))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>There are other ways to access multiple columns that make use of slicing but we’ll leave that topic for another time.</p>
-<p>Sometimes, you’ll want to select columns based on the <em>type</em> of data that they hold. For this, <strong>pandas</strong> provides a function <code>.select_dtypes()</code>. Let’s use this to select all columns with integers in the flights data.</p>
+<p><strong>polars</strong> also provides a <code>selectors</code> module that we can use to select columns based on both data types and criteria such as patterns in the name of the column.</p>
 <div id="62f578d1" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>flights.select_dtypes(<span class="st">"int"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars.selectors <span class="im">as</span> S</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Select all integer columns</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>flights.select(S.integer())</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Exclude string columns</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>flights.select(S.exclude(S.string()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>There are other occasions when you’d like to select columns based on criteria such as patterns in the <em>name</em> of the column. Because Python has very good support for text, this is very possible but doesn’t tend to be so built-in to <strong>pandas</strong> functions. The trick is to generate a list of column names that you want from the pattern you’re interested in.</p>
-<p>Let’s see a couple of examples. First, let’s get all columns in our <code>df</code> data frame that begin with <code>"new_..."</code>. We’ll generate a list of true and false values reflecting if each of the columns begins with “new” and then we’ll pass those true and false values to <code>.loc</code>, which will only give columns for which the result was <code>True</code>. To show what’s going on, we’ll break it into two steps:</p>
-<div id="5aaae8bd" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The list of columns:"</span>)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.columns)</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The list of true and false values:"</span>)</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.columns.<span class="bu">str</span>.startswith(<span class="st">"new"</span>))</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The selection from the data frame:"</span>)</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>df.loc[:, df.columns.<span class="bu">str</span>.startswith(<span class="st">"new"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="d4e486db" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select columns that contain "delay" in their name</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>flights.select(S.contains(<span class="st">"delay"</span>))</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Select columns that start with "arr"</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>flights.select(S.starts_with(<span class="st">"arr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>As well as <code>startswith()</code>, there are other commands like <code>endswith()</code>, <code>contains()</code>, <code>isnumeric()</code>, and <code>islower()</code>.</p>
+<p>Other <code>selectors</code> commands include <code>ends_with()</code>, <code>by_index()</code>, <code>first()</code>, <code>last()</code>, <code>duration()</code>, <code>numeric()</code>, <code>boolean()</code> and more</p>
 </section>
 <section id="renaming-columns" class="level3">
-<h3 class="anchored" data-anchor-id="renaming-columns">Renaming Columns</h3>
-<p>There are three easy ways to rename columns, depending on what the context is. The first is to use the dedicated <code>rename()</code> function with an object called a dictionary. Dictionaries in Python consist of curly brackets with comma separated pairs of values where the first values maps into the second value. An example of a dictionary would be <code>{'old_col1': 'new_col1', 'old_col2': 'new_col2'}</code>. Let’s see this in practice (but note that we are not ‘saving’ the resulting data frame, just showing it—to save it, you’d need to add <code>df =</code> to the left-hand side of the code below).</p>
+<h3 class="anchored">Renaming Columns</h3>
+<p>We use the dedicated <code>rename()</code> function with a mapping, such as a dictionary or a lambda function. Dictionaries in Python consist of curly brackets with comma separated pairs of values where the first values maps into the second value. An example of a dictionary would be <code>{'old_col1': 'new_col1', 'old_col2': 'new_col2'}</code>. Let’s see this in practice (but note that we are not ‘saving’ the resulting data frame, just showing it—to save it, you’d need to add <code>df =</code> to the left-hand side of the code below).</p>
 <div id="5e5c0dd0" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>df.rename(columns<span class="op">=</span>{<span class="st">"col3"</span>: <span class="st">"letters"</span>, <span class="st">"col4"</span>: <span class="st">"names"</span>, <span class="st">"col6"</span>: <span class="st">"fruit"</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>df.rename({<span class="st">"col3"</span>: <span class="st">"letters"</span>, <span class="st">"col4"</span>: <span class="st">"names"</span>, <span class="st">"col6"</span>: <span class="st">"fruit"</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The second method is for when you want to rename all of the columns. For that you simply set <code>df.columns</code> equal to the new set of columns that you’d like to have. For example, we might want to capitalise the first letter of each column using <code>str.capitalize()</code> and assign that to <code>df.columns</code>.</p>
+<p>Using a lambda function, maps each column name as its argument, which you can then perform an operation on.</p>
 <div id="482d301f" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>df.columns <span class="op">=</span> df.columns.<span class="bu">str</span>.capitalize()</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>df.rename(<span class="kw">lambda</span> column_name: column_name.upper())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Finally, we might be interested in just replacing specific parts of column names. In this case, we can use <code>.str.replace()</code>. As an example, let’s add the word <code>"Original"</code> ahead of the original columns:</p>
-<div id="3dd7606b" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>df.columns.<span class="bu">str</span>.replace(<span class="st">"Col"</span>, <span class="st">"Original_column"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="re-ordering-columns" class="level3">
-<h3 class="anchored" data-anchor-id="re-ordering-columns">Re-ordering Columns</h3>
-<p>By default, new columns are added to the right-hand side of the data frame. But you may have reasons to want the columns to appear in a particular order, or perhaps you’d just find it more convenient to have new columns on the left-hand side when there are many columns in a data frame (which happens a lot).</p>
-<p>The simplest way to re-order (all) columns is to create a new list of their names with them in the order that you’d like them: but be careful you don’t forget any columns that you’d like to keep!</p>
-<p>Let’s see an example with a fresh version of the fake data from earlier. We’ll put all of the odd-numbered columns first, in descending order, then the even similarly.</p>
-<div id="b7c0d519" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>np.reshape(<span class="bu">range</span>(<span class="dv">36</span>), (<span class="dv">6</span>, <span class="dv">6</span>)),</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>[<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>, <span class="st">"e"</span>, <span class="st">"f"</span>],</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="st">"col"</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>)],</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    dtype<span class="op">=</span><span class="bu">float</span>,</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="b9a409ac" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[[<span class="st">"col5"</span>, <span class="st">"col3"</span>, <span class="st">"col1"</span>, <span class="st">"col4"</span>, <span class="st">"col2"</span>, <span class="st">"col0"</span>]]</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Of course, this is quite tedious if you have lots of columns! There are methods that can help make this easier depending on your context. Perhaps you’d just liked to sort the columns in order? This can be achieved by combining <code>sorted()</code> and the <code>reindex()</code> command (which works for rows or columns) with <code>axis=1</code>, which means the second axis (i.e.&nbsp;columns).</p>
-<div id="e7ab5f64" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>df.reindex(<span class="bu">sorted</span>(df.columns), axis<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-</section>
-<section id="review-of-how-to-access-rows-columns-and-values" class="level2">
-<h2 class="anchored" data-anchor-id="review-of-how-to-access-rows-columns-and-values">Review of How to Access Rows, Columns, and Values</h2>
-<p>With all of these different ways to access values in data frames, it can get confusing. These are the different ways to get the first column of a data frame (when that first column is called <code>column</code> and the data frame is <code>df</code>):</p>
-<ul>
-<li><code>df.column</code></li>
-<li><code>df["column"]</code></li>
-<li><code>df.loc[:, "column"]</code></li>
-<li><code>df.iloc[:, 0]</code></li>
-</ul>
-<p>Note that <code>:</code> means ‘give me everything’! The ways to access rows are similar (here assuming the first row is called <code>row</code>):</p>
-<ul>
-<li><code>df.loc["row", :]</code></li>
-<li><code>df.iloc[0, :]</code></li>
-</ul>
-<p>And to access the first value (ie the value in first row, first column):</p>
-<ul>
-<li><code>df.column[0]</code></li>
-<li><code>df["column"][0]</code></li>
-<li><code>df.iloc[0, 0]</code></li>
-<li><code>df.loc["row", "column"]</code></li>
-</ul>
-<p>In the above examples, square brackets are instructions about <em>where</em> to grab bits from the data frame. They are a bit like an address system for values within a data frame. Square brackets <em>also</em> denote lists though. So if you want to select <em>multiple</em> columns or rows, you might see syntax like this:</p>
-<p><code>df.loc[["row0", "row1"], ["column0", "column2"]]</code></p>
-<p>which picks out two rows and two columns via the lists <code>["row0", "row1"]</code> and <code>["column0", "column2"]</code>. Because there are lists alongside the usual system of selecting values, there are two sets of square brackets.</p>
-<div class="callout callout-style-default callout-tip callout-titled" title="Tip">
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Tip
+Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If you only want to remember one syntax for accessing rows and columns by name, use the pattern <code>df.loc[["row0", "row1", ...], ["col0", "col1", ...]]</code>. This also works with a single row or a single column (or both).</p>
-<p>If you only want to remember one syntax for accessing rows and columns by position, use the pattern <code>df.iloc[[0, 1, ...], [0, 1, ...]]</code>. This also works with a single row or a single column (or both).</p>
+<p>A <em>lambda function</em> is a small, anonymous function in Python that performs a single operation. It’s a shorthand way to create a function without using <code>def</code>.</p>
+<section id="re-ordering-columns" class="level3">
+<h3 class="anchored" data-anchor-id="re-ordering-columns">Re-ordering Columns</h3>
+<p>By default, new columns are added to the right-hand side of the data frame. But you may have reasons to want the columns to appear in a particular order, or perhaps you’d just find it more convenient to have new columns on the left-hand side when there are many columns in a data frame (which happens a lot).</p>
+<p>The simplest way to re-order (all) columns is to create a new list of their names with them in the order that you’d like them: but be careful you don’t forget any columns that you’d like to keep!</p>
+<p>Let’s see an example with a fresh version of the fake data from earlier. We’ll put all of the odd-numbered columns first, in descending order, then the even similarly using <code>.select()</code>.</p>
+<div id="b7c0d519" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pl.DataFrame(</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>np.reshape(<span class="bu">range</span>(<span class="dv">36</span>), (<span class="dv">6</span>, <span class="dv">6</span>)), schema<span class="op">=</span>[<span class="st">"col"</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>)]</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div id="3c2029cc" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.select([<span class="st">"col5"</span>, <span class="st">"col3"</span>, <span class="st">"col1"</span>, <span class="st">"col4"</span>, <span class="st">"col2"</span>, <span class="st">"col0"</span>])</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p>Of course, this is quite tedious if you have lots of columns! There are methods that can help make this easier depending on your context. Perhaps you’d just liked to sort the columns in order? This can be achieved by combining <code>sorted()</code> and the <code>.select()</code> function, passing the DataFrame <code>.columns</code>.</p>
+<div id="e7ab5f64" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Alphabetical order</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>df.select(<span class="bu">sorted</span>(df.columns))</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Reverse alphabetical order</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>df.select(<span class="bu">sorted</span>(df.columns, reverse<span class="op">=</span><span class="va">True</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
 <section id="column-and-row-exercises" class="level3">
 <h3 class="anchored" data-anchor-id="column-and-row-exercises">Column and Row Exercises</h3>
 <ol type="1">
-<li><p>Compare <code>air_time</code> with <code>arr_time - dep_time</code>. What do you expect to see? What do you see What do you need to do to fix it?</p></li>
+<li><p>Compare <code>air_time</code> with <code>arr_time - dep_time</code>. What do you expect to see? What do you see? What do you need to do to fix it?</p></li>
 <li><p>Compare <code>dep_time</code>, <code>sched_dep_time</code>, and <code>dep_delay</code>. How would you expect those three numbers to be related?</p></li>
 <li><p>Brainstorm as many ways as possible to select <code>dep_time</code>, <code>dep_delay</code>, <code>arr_time</code>, and <code>arr_delay</code> from <code>flights</code>.</p></li>
 <li><p>What happens if you include the name of a row or column multiple times when trying to select them?</p></li>
-<li><p>What does the <code>.isin()</code> function do in the following?</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>flights.columns.isin([<span class="st">"year"</span>, <span class="st">"month"</span>, <span class="st">"day"</span>, <span class="st">"dep_delay"</span>, <span class="st">"arr_delay"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
-<li><p>Does the result of running the following code surprise you? How do functions like <code>str.contains</code> deal with case by default? How can you change that default?</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>flights.loc[:, flights.columns.<span class="bu">str</span>.contains(<span class="st">"TIME"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>(Hint: you can use help even on functions that apply to data frames, eg use <code>help(flights.columns.str.contains)</code>)</p></li>
 </ol>
 </section>
-</section>
-<section id="grouping-changing-the-index-and-applying-summary-statistics" class="level2">
-<h2 class="anchored" data-anchor-id="grouping-changing-the-index-and-applying-summary-statistics">Grouping, changing the index, and applying summary statistics</h2>
-<p>So far you’ve learned about working with rows and columns. <strong>pandas</strong> gets even more powerful when you add in the ability to work with groups. Creating groups will often also mean a change of index. And because groups tend to imply an aggregation or pooling of data, they often go hand-in-hand with the application of a summary statistic.</p>
+<section id="grouping-and-applying-summary-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="grouping-and-applying-summary-statistics">Grouping and applying summary statistics</h2>
+<p>So far you’ve learned about working with rows and columns. <strong>polars</strong> gets even more powerful when you add in the ability to work with groups. And because groups tend to imply an aggregation or pooling of data, they go hand-in-glove with the application of a summary statistic.</p>
 <p>The diagram below gives a sense of how these operations can proceed together. Note that the ‘split’ operation is achieved through grouping, while apply produces summary statistics. At the end, you get a data frame with a new index (one entry per group) in what is shown as the ‘combine’ step.</p>
 <p><img src="https://jakevdp.github.io/PythonDataScienceHandbook/figures/03.08-split-apply-combine.png" class="img-fluid"></p>
 <section id="grouping-and-aggregating" class="level3">
 <h3 class="anchored" data-anchor-id="grouping-and-aggregating">Grouping and Aggregating</h3>
-<p>Let’s take a look at creating a group using the <code>.groupby()</code> function followed by selecting a column and applying a summary statistic via an aggregation. Note that <em>aggregation</em>, via <code>.agg()</code>, always produces a new index because we have collapsed information down to the group-level (and the new index is made of those levels).</p>
-<p>The key point to remember is: use <code>.agg()</code> with <code>.groupby()</code> when you want your groups to become the new index.</p>
+<p>Let’s take a look at creating a group using the <code>.group_by()</code> function, then followed by the <code>.agg()</code> function for aggregation, selecting a column and applying a summary statistic via an aggregation.</p>
 <div id="62e540c0" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>(flights.groupby(<span class="st">"month"</span>)[[<span class="st">"dep_delay"</span>]].mean())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>flights.group_by(<span class="st">"month"</span>).agg(pl.col(<span class="st">"dep_delay"</span>).mean())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>This now represents the mean departure delay by month. Notice that our index has changed! We now have month where we original had an index that was just the row number. The index plays an important role in grouping operations because it keeps track of the groups you have in the rest of your data frame.</p>
-<p>Often, you might want to do multiple summary operations in one go. The most comprehensive syntax for this is via <code>.agg()</code>. We can reproduce what we did above using <code>.agg()</code>:</p>
-<div id="aaaca266" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>(flights.groupby(<span class="st">"month"</span>)[[<span class="st">"dep_delay"</span>]].agg(<span class="st">"mean"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>where you pass in whatever aggregation you want. Some common options are in the table below:</p>
+<p>This now represents the mean departure delay by month. The mechanics happenning here is that the DataFrame is grouped by each unique item in the <em>“month”</em> column and then a mean summary statistic is derived on the <em>“dep_delay”</em> column from each group.</p>
+<p>Other summary statistics can be derived from aggregations. Some common options are in the table below:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1102,37 +1088,41 @@ Note
 <tbody>
 <tr class="odd">
 <td><code>count()</code></td>
-<td>Number of items</td>
+<td>Number of non-null items</td>
 </tr>
 <tr class="even">
+<td><code>len()</code></td>
+<td>Number of all items</td>
+</tr>
+<tr class="odd">
 <td><code>first()</code>, <code>last()</code></td>
 <td>First and last item</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>mean()</code>, <code>median()</code></td>
 <td>Mean and median</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>min()</code>, <code>max()</code></td>
 <td>Minimum and maximum</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>std()</code>, <code>var()</code></td>
 <td>Standard deviation and variance</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>mad()</code></td>
 <td>Mean absolute deviation</td>
 </tr>
-<tr class="odd">
-<td><code>prod()</code></td>
+<tr class="even">
+<td><code>product()</code></td>
 <td>Product of all items</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>sum()</code></td>
 <td>Sum of all items</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>value_counts()</code></td>
 <td>Counts of unique values</td>
 </tr>
@@ -1140,59 +1130,38 @@ Note
 </table>
 <p>For doing multiple aggregations on multiple columns with new names for the output variables, the syntax becomes</p>
 <div id="af588177" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    flights.groupby([<span class="st">"month"</span>]).agg(</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>        mean_delay<span class="op">=</span>(<span class="st">"dep_delay"</span>, <span class="st">"mean"</span>),</span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>        count_flights<span class="op">=</span>(<span class="st">"dep_delay"</span>, <span class="st">"count"</span>),</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Multiple aggregations using polars' syntactic sugar (shorthand) for mean and count</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>flights.group_by(<span class="st">"month"</span>).agg(</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    mean_delay<span class="op">=</span>pl.mean(<span class="st">"dep_delay"</span>),</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    count_flights<span class="op">=</span>pl.count(<span class="st">"dep_delay"</span>),</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Means and counts can get you a surprisingly long way in data science!</p>
 </section>
 <section id="grouping-by-multiple-variables" class="level3">
 <h3 class="anchored" data-anchor-id="grouping-by-multiple-variables">Grouping by multiple variables</h3>
-<p>This is as simple as passing <code>.groupby()</code> a list representing multiple columns instead of a string representing a single column.</p>
+<p>This is as simple as passing <code>.group_by()</code> a list or multiple strings representing columns instead of a single string representing a single column.</p>
 <div id="b0e56ff1" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>month_year_delay <span class="op">=</span> flights.groupby([<span class="st">"month"</span>, <span class="st">"year"</span>]).agg(</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    mean_delay<span class="op">=</span>(<span class="st">"dep_delay"</span>, <span class="st">"mean"</span>),</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    count_flights<span class="op">=</span>(<span class="st">"dep_delay"</span>, <span class="st">"count"</span>),</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>month_year_delay <span class="op">=</span> flights.group_by(<span class="st">"month"</span>, <span class="st">"year"</span>).agg(</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    mean_delay<span class="op">=</span>pl.mean(<span class="st">"dep_delay"</span>),</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    count_flights<span class="op">=</span>pl.count(<span class="st">"dep_delay"</span>),</span>
 <span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>month_year_delay</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>You might have noticed that this time we have a multi-index (that is, an index with more than one column). That’s because we asked for something with multiple groups, and the index tracks what’s going on within each group: so we need more than one dimension of index to do this efficiently.</p>
-<p>If you ever want to go back to an index that is just the position, try <code>reset_index()</code></p>
-<div id="33712dc2" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>month_year_delay.reset_index()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Perhaps you only want to remove one layer of the index though. This can be achieved by passing the position of the index you’d like to remove: for example, to only change the year index to a column, we would use:</p>
-<div id="bcbef8f7" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>month_year_delay.reset_index(<span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Finally, you can do more complicated re-arrangements of the index with an operation called <code>unstack</code>, which pivots the chosen index variable to be a column variable instead (introducing a multi column level structure). It’s usually best to avoid this.</p>
-</section>
-<section id="grouping-and-transforming" class="level3">
-<h3 class="anchored" data-anchor-id="grouping-and-transforming">Grouping and Transforming</h3>
-<p>You may not always want to change the index to reflect new groups when performing computations at the group level.</p>
-<p>The key point to remember is: use <code>.transform()</code> with <code>.groupby()</code> when you want to perform computations on your groups but you want to go back to the original index.</p>
-<p>Let’s say we wanted to express the arrival delay, <code>"arr_del"</code>, of each flight as a fraction of the worst arrival delay in each month.</p>
-<div id="f96fcf41" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>flights[<span class="st">"max_delay_month"</span>] <span class="op">=</span> flights.groupby(<span class="st">"month"</span>)[<span class="st">"arr_delay"</span>].transform(<span class="st">"max"</span>)</span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>flights[<span class="st">"delay_frac_of_max"</span>] <span class="op">=</span> flights[<span class="st">"arr_delay"</span>] <span class="op">/</span> flights[<span class="st">"max_delay_month"</span>]</span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>flights[</span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"year"</span>, <span class="st">"month"</span>, <span class="st">"day"</span>, <span class="st">"arr_delay"</span>, <span class="st">"max_delay_month"</span>, <span class="st">"delay_frac_of_max"</span>]</span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Note that the first few entries of <code>"max_delay_month"</code> are all the same because the month is the same for those entries, but the delay fraction changes with each row.</p>
 </section>
 <section id="groupby-exercises" class="level3">
 <h3 class="anchored" data-anchor-id="groupby-exercises">Groupby Exercises</h3>
 <ol type="1">
-<li><p>Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs.&nbsp;bad carriers? Why/why not? (Hint: think about <code>flights.groupby(["carrier", "dest"]).count()</code>)</p></li>
+<li><p>Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs.&nbsp;bad carriers? Why/why not? (Hint: think about <code>flights.group_by(["carrier", "dest"])</code>)</p></li>
 <li><p>Find the most delayed flight to each destination.</p></li>
 <li><p>How do delays vary over the course of the day?</p></li>
 </ol>
 
 
+</section>
+</section>
+</div>
+</div>
 </section>
 </section>
 

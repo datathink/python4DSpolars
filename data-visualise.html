@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.20">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Data Visualisation – Python for Data Science</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -62,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -97,14 +95,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-3512cbed9e2527d986e9b0b56d261405.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-7038d31925839fcd0b50e6237b0ff245.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-3512cbed9e2527d986e9b0b56d261405.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b82ea56535f386973218045d6b68731c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-6cd122c916d650f3a191256d27f1424d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-b82ea56535f386973218045d6b68731c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-e165a794f04406688339ef99d26b34d0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-db266c2195edc5d49b552008bac0d953.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-e165a794f04406688339ef99d26b34d0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -708,16 +706,17 @@ Note
 </div>
 </div>
 <p>Note that you only need to install a package once in each Python environment.</p>
-<p>We’ll also need to have the <strong>pandas</strong> package installed—this package, which we’ll be seeing a lot of, is for data. You can similarly install it by running <code>uv add pandas</code> on the command line.</p>
+<p>We’ll also need to have the <strong>polars</strong> package installed—this package, which we’ll be seeing a lot of, is for data. You can similarly install it by running <code>uv add polars</code> on the command line.</p>
 <p>Finally, we’ll also need some data (you can’t science without data). We’ll be using the Palmer penguins dataset. Unusually, this can also be installed as a package—normally you would load data from a file, but these data are so popular for tutorials they’ve found their way into an installable package. Run <code>uv add palmerpenguins</code> to get these data.</p>
-<p>Our next task is to load these into our Python session, either in a Python notebook cell within a Jupyter Notebook, by writing it in a script that we then send to the interactive window, or by typing it directly into the interactive window and hitting shift and enter. Here’s the code:</p>
+<p>Our next task is to load these into our Python session, either in a Python notebook cell within a Marimo or Jupyter Notebook, by writing it in a script that we then send to the interactive window, or by typing it directly into the interactive window and hitting shift and enter. Here’s the code:</p>
 <div id="a86fb211" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> lets_plot <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>LetsPlot.setup_html()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> lets_plot <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>LetsPlot.setup_html()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>These lines import parts of the <strong>pandas</strong> and <strong>palmerpenguins</strong> packages, then import all (<code>*</code>) of the functions of the <strong>letsplot</strong> package. The final line allows charts to display in HTML.</p>
+<p>These lines import parts of the <strong>palmerpenguins</strong> package, then import all (<code>*</code>) of the functions of the <strong>letsplot</strong> package. The final line allows charts to display in HTML.</p>
 </section>
 </section>
 <section id="first-steps" class="level2">
@@ -725,7 +724,7 @@ Note
 <p>Do penguins with longer flippers weigh more or less than penguins with shorter flippers? You probably already have an answer, but try to make your answer precise. What does the relationship between flipper length and body mass look like? Is it positive? Negative? Linear? Nonlinear? Does the relationship vary by the species of the penguin? How about by the island where the penguin lives? Let’s create visualisations that we can use to answer these questions.</p>
 <section id="the-penguins-data-frame" class="level3">
 <h3 class="anchored" data-anchor-id="the-penguins-data-frame">The penguins data frame</h3>
-<p>You can test your answers to those questions with the penguins data frame found in palmerpenguins (a.k.a. <code>from palmerpenguins import load_penguins</code>). A data frame is a rectangular collection of variables (in the columns) and observations (in the rows). <code>penguins</code> contains 344 observations collected and made available by Dr.&nbsp;Kristen Gorman and the Palmer Station, Antarctica LTER <span class="citation" data-cites="horst2020palmerpenguins">(<a href="references.html#ref-horst2020palmerpenguins" role="doc-biblioref">Horst et al. 2020</a>)</span>.</p>
+<p>You can test your answers to those questions with the penguins data frame found in palmerpenguins (a.k.a. <code>from palmerpenguins import load_penguins</code>). A data frame is a rectangular collection of variables (in the columns) and observations (in the rows). <code>penguins</code> contains 344 observations collected and made available by Dr.&nbsp;Kristen Gorman and the Palmer Station, Antarctica LTER <span class="citation" data-cites="horst2020palmerpenguins">(<a href="references.html#ref-horst2020palmerpenguins" role="doc-biblioref">Horst, Hill, and Gorman 2020</a>)</span>.</p>
 <p>To make the discussion easier, let’s define some terms:</p>
 <ul>
 <li><p>A <strong>variable</strong> is a quantity, quality, or property that you can measure.</p></li>
@@ -736,7 +735,7 @@ Note
 <p>In this context, a variable refers to an attribute of all the penguins, and an observation refers to all the attributes of a single penguin.</p>
 <p>Type the name of the data frame in the interactive window and Python will print a preview of its contents.</p>
 <div id="0cf986aa" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> load_penguins()</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> pl.from_pandas(load_penguins())</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>penguins</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>For an alternative view, where you can see the first few observations of each variable, use <code>penguins.head()</code>.</p>
@@ -875,7 +874,7 @@ Note
 <li><p>Make a scatterplot of <code>bill_depth_mm</code> vs.&nbsp;<code>bill_length_mm</code>. That is, make a scatterplot with <code>bill_depth_mm</code> on the y-axis and <code>bill_length_mm</code> on the x-axis. Describe the relationship between these two variables.</p></li>
 <li><p>What happens if you make a scatterplot of <code>species</code> vs.&nbsp;<code>bill_depth_mm</code>? What might be a better choice of geom?</p></li>
 <li><p>Why does the following give an error and how would you fix it?</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(ggplot(data <span class="op">=</span> penguins) <span class="op">+</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(ggplot(data <span class="op">=</span> penguins) <span class="op">+</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  geom_point())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p>Add the following caption to the plot you made in the previous exercise: “Data come from the palmerpenguins package.” Hint: Take a look at the documentation for <code>labs()</code>.</p></li>
 <li><p>Recreate the following visualisation. What aesthetic should <code>bill_depth_mm</code> be mapped to? And should it be mapped at the global level or at the geom level?</p></li>
@@ -931,7 +930,7 @@ Note
 <p>Typically, the first one or two arguments to a function are so important that you should know them by heart. The first two arguments to <code>ggplot()</code> are <code>data</code> and <code>mapping</code>, in the remainder of the book, we won’t supply those names—the way the function is written, Python knows to expect these variables because of their position. Not writing them in saves typing, and, by reducing the amount of extra text, makes it easier to see what’s different between plots. That’s a really important programming concern that we’ll come back to later.</p>
 <p>Rewriting the previous plot more concisely yields:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    ggplot(penguins, aes(x <span class="op">=</span> <span class="st">"flipper_length_mm"</span>, y <span class="op">=</span> <span class="st">"body_mass_g"</span>)) <span class="op">+</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    ggplot(penguins, aes(x <span class="op">=</span> <span class="st">"flipper_length_mm"</span>, y <span class="op">=</span> <span class="st">"body_mass_g"</span>)) <span class="op">+</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  geom_point()</span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
@@ -945,9 +944,9 @@ Note
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(ggplot(penguins, aes(x<span class="op">=</span><span class="st">"species"</span>)) <span class="op">+</span> geom_bar())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>You may have seen earlier that the <em>data type</em> of the <code>"species"</code> column is string. Ideally, we want it to be categorical, so that there’s no confusion about the fact that we’re dealing with a finite number of mutually exclusive groups here. Another advantage is that it allows plotting tools to realise what kind of data it is working with.</p>
-<p>We can transform the variable to a categorical variable using <strong>pandas</strong> like so:</p>
+<p>We can transform the variable to a categorical variable using <strong>polars</strong> like so:</p>
 <div id="4e046bb2" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>penguins[<span class="st">"species"</span>] <span class="op">=</span> penguins[<span class="st">"species"</span>].astype(<span class="st">"category"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> penguins.cast({<span class="st">"species"</span>: pl.Categorical})</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>penguins.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>You will learn more about categorical variables later in the book.</p>
@@ -1072,7 +1071,7 @@ Note
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    ggplot(</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>      data <span class="op">=</span> penguins,</span>
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>      mapping <span class="op">=</span> aes(</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="st">"bill_length_mm"</span>, y <span class="op">=</span> <span class="st">"bill_depth_mm"</span>, </span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="st">"bill_length_mm"</span>, y <span class="op">=</span> <span class="st">"bill_depth_mm"</span>,</span>
 <span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> <span class="st">"species"</span>, shape <span class="op">=</span> <span class="st">"species"</span></span>
 <span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>      )</span>
 <span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">+</span></span>
@@ -1122,7 +1121,7 @@ Note
 <p>With the basics of visualisation under your belt, in the next chapter we’re going to switch gears a little and give you some practical workflow advice. We intersperse workflow advice with data science tools throughout this part of the book because it’ll help you stay organised as you write more Python code.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-horst2020palmerpenguins" class="csl-entry" role="listitem">
 Horst, Allison Marie, Alison Presmanes Hill, and Kristen B Gorman. 2020. <span>“Palmerpenguins: Palmer Archipelago (Antarctica) Penguin Data.”</span> <em>R Package Version 0.1.0</em>.
 </div>
