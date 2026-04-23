@@ -606,11 +606,11 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
   <li><a href="#ethical-and-legal-considerations" id="toc-ethical-and-legal-considerations" class="nav-link" data-scroll-target="#ethical-and-legal-considerations">Ethical and legal considerations</a></li>
   <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
   </ul></li>
-  <li><a href="#extracting-data-from-files-on-the-internet-using-pandas" id="toc-extracting-data-from-files-on-the-internet-using-pandas" class="nav-link" data-scroll-target="#extracting-data-from-files-on-the-internet-using-pandas">Extracting Data from Files on the Internet using <strong>pandas</strong></a></li>
+  <li><a href="#extracting-data-from-files-on-the-internet-using-polars" id="toc-extracting-data-from-files-on-the-internet-using-polars" class="nav-link" data-scroll-target="#extracting-data-from-files-on-the-internet-using-polars">Extracting Data from Files on the Internet using <strong>polars</strong></a></li>
   <li><a href="#obtaining-data-using-apis" id="toc-obtaining-data-using-apis" class="nav-link" data-scroll-target="#obtaining-data-using-apis">Obtaining data using APIs</a>
   <ul class="collapse">
-  <li><a href="#pandas-datareader-an-easier-way-to-interact-with-some-apis" id="toc-pandas-datareader-an-easier-way-to-interact-with-some-apis" class="nav-link" data-scroll-target="#pandas-datareader-an-easier-way-to-interact-with-some-apis">Pandas Datareader: an easier way to interact with (some) APIs</a></li>
-  <li><a href="#the-oecd-api" id="toc-the-oecd-api" class="nav-link" data-scroll-target="#the-oecd-api">The OECD API</a></li>
+  <li><a href="#accessing-world-bank-data-with-wbgapi" id="toc-accessing-world-bank-data-with-wbgapi" class="nav-link" data-scroll-target="#accessing-world-bank-data-with-wbgapi">Accessing World Bank Data with wbgapi</a></li>
+  <li><a href="#the-eurostat-sdmx-api" id="toc-the-eurostat-sdmx-api" class="nav-link" data-scroll-target="#the-eurostat-sdmx-api">The Eurostat SDMX API</a></li>
   <li><a href="#other-useful-apis" id="toc-other-useful-apis" class="nav-link" data-scroll-target="#other-useful-apis">Other Useful APIs</a></li>
   </ul></li>
   <li><a href="#webscraping" id="toc-webscraping" class="nav-link" data-scroll-target="#webscraping">Webscraping</a>
@@ -660,26 +660,25 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 </section>
 <section id="prerequisites" class="level3">
 <h3 class="anchored" data-anchor-id="prerequisites">Prerequisites</h3>
-<p>You will need to install the <strong>pandas</strong> package for this chapter. We’ll use <strong>seaborn</strong> too, which you should already have installed. You will also need to install the <strong>beautifulsoup</strong>, <strong>pandas-datareader</strong>, and <strong>wbgapi</strong> packages in your terminal using <code>uv add beautifulsoup4</code>, <code>uv add pandas-datareader</code>, and <code>uv add wbgapi</code> respectively. We’ll also use two built-in packages, <strong>textwrap</strong> and <strong>requests</strong>.</p>
+<p>You will need to install the <strong>pandas</strong> and <strong>polars</strong> package for this chapter. We’ll use <strong>seaborn</strong> too, which you should already have installed. You will also need to install the <strong>beautifulsoup</strong>, <strong>pandas-datareader</strong>, and <strong>wbgapi</strong> packages in your terminal using <code>uv add beautifulsoup4</code>, and <code>uv add wbgapi</code> respectively. We’ll also use two built-in packages, <strong>textwrap</strong> and <strong>requests</strong>.</p>
 <p>To kick off, let’s import some of the packages we need (it’s always good practice to import the packages you need at the top of a script or notebook).</p>
 <div id="a7f62293" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> textwrap</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs4 <span class="im">import</span> BeautifulSoup</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> lets_plot <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>LetsPlot.setup_html()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lets_plot <span class="im">as</span> lp</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs4 <span class="im">import</span> BeautifulSoup</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
-<section id="extracting-data-from-files-on-the-internet-using-pandas" class="level2">
-<h2 class="anchored" data-anchor-id="extracting-data-from-files-on-the-internet-using-pandas">Extracting Data from Files on the Internet using <strong>pandas</strong></h2>
+<section id="extracting-data-from-files-on-the-internet-using-polars" class="level2">
+<h2 class="anchored" data-anchor-id="extracting-data-from-files-on-the-internet-using-polars">Extracting Data from Files on the Internet using <strong>polars</strong></h2>
 <p>It’s easy to read data from the internet once you have the url and file type. Here, for instance, is an example that reads in the ‘storms’ dataset, which is stored as a CSV file in a URL (we’ll only grab the first 10 rows):</p>
 <div id="06108a4d" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pd.read_csv(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://vincentarelbundock.github.io/Rdatasets/csv/dplyr/storms.csv"</span>, nrows<span class="op">=</span><span class="dv">10</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pl.read_csv(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://vincentarelbundock.github.io/Rdatasets/csv/dplyr/storms.csv"</span>, n_rows<span class="op">=</span><span class="dv">10</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
@@ -702,152 +701,187 @@ Note
 </div>
 <p>To see this, let’s directly use an API to get some time series data. We will make the call out to the internet using the <strong>requests</strong> package.</p>
 <p>An API has an ‘endpoint’, the base url, and then a URL that encodes the question. Let’s see an example with the ONS API for which the endpoint is “https://api.beta.ons.gov.uk/v1/”. The rest of the API has the form ‘data?uri=’ and then the long ID of both the timeseries (jp9z) and then the dataset (LMS), which is vacancies in the UK services sector.</p>
-<p>The data that are returned by APIs are typically in JSON format, which looks a lot like a nested Python dictionary and its entries can be accessed in the same way–this is what is happening when getting the series’ title in the example below. JSON is not good for analysis, so we’ll use <strong>pandas</strong> to put the data into shape.</p>
-<div id="c4226d67" class="cell">
+<p>The data that are returned by APIs are typically in JSON format, which looks a lot like a nested Python dictionary and its entries can be accessed in the same way–this is what is happening when getting the series’ title in the example below. JSON is not good for analysis, so we’ll use <strong>polars</strong> to put the data into shape.</p>
+<div id="6107093c" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://api.beta.ons.gov.uk/v1/data?uri=/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/timeseries/jp9z/lms/previous/v108"</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the data from the ONS API:</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>json_data <span class="op">=</span> requests.get(url).json()</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Prep the data for a quick plot</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>title <span class="op">=</span> json_data[<span class="st">"description"</span>][<span class="st">"title"</span>]</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> (</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    pd.DataFrame(pd.json_normalize(json_data[<span class="st">"months"</span>]))</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    .assign(</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        date<span class="op">=</span><span class="kw">lambda</span> x: pd.to_datetime(x[<span class="st">"date"</span>]),</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        value<span class="op">=</span><span class="kw">lambda</span> x: pd.to_numeric(x[<span class="st">"value"</span>]),</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    .set_index(<span class="st">"date"</span>)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"value"</span>].plot(title<span class="op">=</span>title, ylim<span class="op">=</span>(<span class="dv">0</span>, df[<span class="st">"value"</span>].<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.2</span>), lw<span class="op">=</span><span class="fl">3.0</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>title <span class="op">=</span> json_data[<span class="st">"description"</span>][<span class="st">"title"</span>]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert dates using string operations</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> (</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    pl.DataFrame(json_data[<span class="st">"months"</span>])</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Add day to make it a valid date string</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            (pl.col(<span class="st">"date"</span>) <span class="op">+</span> <span class="st">"-01"</span>).<span class="bu">str</span>.to_date(<span class="bu">format</span><span class="op">=</span><span class="st">"%Y %b-</span><span class="sc">%d</span><span class="st">"</span>).alias(<span class="st">"date"</span>),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">"value"</span>).cast(pl.Float64).alias(<span class="st">"value"</span>),</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    .drop_nulls(<span class="st">"date"</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    .sort(<span class="st">"date"</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the library</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>lp.LetsPlot.setup_html()</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Create plot using the alias</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    lp.ggplot(df, lp.aes(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"value"</span>))</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> lp.geom_line(size<span class="op">=</span><span class="fl">2.0</span>, color<span class="op">=</span><span class="st">"steelblue"</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> lp.ggtitle(title)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> lp.ylim(<span class="dv">0</span>, df[<span class="st">"value"</span>].<span class="bu">max</span>() <span class="op">*</span> <span class="fl">1.2</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> lp.theme_classic()</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>chart</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We’ve talked about <em>reading</em> APIs. You can also create your own to serve up data, models, whatever you like! This is an advanced topic and we won’t cover it; but if you do need to, the simplest way is to use <a href="https://fastapi.tiangolo.com/">Fast API</a>. You can find some short video tutorials for Fast API <a href="https://calmcode.io/fastapi/hello-world.html">here</a>.</p>
-<section id="pandas-datareader-an-easier-way-to-interact-with-some-apis" class="level3">
-<h3 class="anchored" data-anchor-id="pandas-datareader-an-easier-way-to-interact-with-some-apis">Pandas Datareader: an easier way to interact with (some) APIs</h3>
-<p>Although it didn’t take much code to get the ONS data, it would be even better if it was just a single line, wouldn’t it? Fortunately there are some packages out there that make this easy, but it does depend on the API (and APIs come and go over time).</p>
-<p>By far the most comprehensive library for accessing extra APIs is <a href="https://pandas-datareader.readthedocs.io/en/latest/"><strong>pandas-datareader</strong></a>, which provides convenient access to:</p>
-<ul>
-<li>FRED</li>
-<li>Quandl</li>
-<li>World Bank</li>
-<li>OECD</li>
-<li>Eurostat</li>
-</ul>
-<p>and more.</p>
-<p>Let’s see an example using FRED (the Federal Reserve Bank of St.&nbsp;Louis’ economic data library). This time, let’s look at the UK unemployment rate:</p>
-<div id="bf758fb4" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas_datareader.data <span class="im">as</span> web</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df_u <span class="op">=</span> web.DataReader(<span class="st">"LRHUTTTTGBM156S"</span>, <span class="st">"fred"</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>df_u.plot(title<span class="op">=</span><span class="st">"UK unemployment (percent)"</span>, legend<span class="op">=</span><span class="va">False</span>, ylim<span class="op">=</span>(<span class="dv">2</span>, <span class="dv">6</span>), lw<span class="op">=</span><span class="fl">3.0</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>And, because it’s also a really useful one, let’s see how to use the <a href="https://pypi.org/project/wbgapi/"><strong>wbgapi</strong></a> package to access World Bank data. (<strong>pandas-datareader</strong> used to provide a World Bank reader too, but it has not been actively maintained, so we prefer <strong>wbgapi</strong> for new work.)</p>
+<section id="accessing-world-bank-data-with-wbgapi" class="level3">
+<h3 class="anchored" data-anchor-id="accessing-world-bank-data-with-wbgapi">Accessing World Bank Data with wbgapi</h3>
+<p>While APIs can be accessed directly using tools like requests, some specialized libraries make working with structured datasets much easier. One such example is wbgapi, which provides a convenient interface for accessing World Bank data.</p>
+<p>Let’s look at an example using World Bank data on CO₂-equivalent emissions per capita:</p>
 <div id="380ca743" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># World Bank CO2 equivalent emissions (metric tons per capita)</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># https://data.worldbank.org/indicator/EN.GHG.ALL.PC.CE.AR5</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># country and region codes at http://api.worldbank.org/v2/country</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> wbgapi <span class="im">as</span> wb</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>indicator_code <span class="op">=</span> <span class="st">"EN.GHG.ALL.PC.CE.AR5"</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> (</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    wb.data.DataFrame(</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        indicator_code,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"USA"</span>, <span class="st">"CHN"</span>, <span class="st">"IND"</span>, <span class="st">"EAS"</span>, <span class="st">"ECS"</span>],  <span class="co"># country and region codes</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        time<span class="op">=</span><span class="bu">range</span>(<span class="dv">2019</span>, <span class="dv">2020</span>),</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        labels<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    .rename(columns<span class="op">=</span>{<span class="st">"Country"</span>: <span class="st">"country"</span>, <span class="st">"YR2019"</span>: indicator_code})</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    .reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"country"</span>] <span class="op">=</span> df[<span class="st">"country"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: textwrap.fill(x, <span class="dv">10</span>))  <span class="co"># wrap long names</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.sort_values(indicator_code)  <span class="co"># re-order</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># World Bank CO2 equivalent emissions (metric tons per capita)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># https://data.worldbank.org/indicator/EN.GHG.ALL.PC.CE.AR5</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># country and region codes at http://api.worldbank.org/v2/country</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> wbgapi <span class="im">as</span> wb</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>indicator_code <span class="op">=</span> <span class="st">"EN.GHG.ALL.PC.CE.AR5"</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> (</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    pl.from_pandas(</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        wb.data.DataFrame(</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>            indicator_code,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            [<span class="st">"USA"</span>, <span class="st">"CHN"</span>, <span class="st">"IND"</span>, <span class="st">"EAS"</span>, <span class="st">"ECS"</span>],</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>            time<span class="op">=</span><span class="bu">range</span>(<span class="dv">2019</span>, <span class="dv">2020</span>),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            labels<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        ).reset_index()</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    .rename({<span class="st">"Country"</span>: <span class="st">"country"</span>})</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    .with_columns(pl.col(<span class="st">"country"</span>).map_elements(<span class="kw">lambda</span> x: textwrap.fill(x, <span class="dv">10</span>)))</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    .sort(indicator_code, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="00379b93" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    ggplot(df, aes(x<span class="op">=</span><span class="st">"country"</span>, y<span class="op">=</span>indicator_code))</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_bar(aes(fill<span class="op">=</span><span class="st">"country"</span>), color<span class="op">=</span><span class="st">"black"</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, stat<span class="op">=</span><span class="st">"identity"</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> scale_fill_discrete()</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme_minimal()</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme(legend_position<span class="op">=</span><span class="st">"none"</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> ggsize(<span class="dv">600</span>, <span class="dv">400</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        subtitle<span class="op">=</span><span class="st">"Greenhouse gases (CO2-equivalent metric tons per capita, 2019)"</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"The USA leads the world on per-capita emissions"</span>,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span><span class="st">""</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lp.LetsPlot.setup_html()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>country_order <span class="op">=</span> df[<span class="st">"country"</span>].to_list()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>plot <span class="op">=</span> (</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    lp.ggplot(df, lp.aes(x<span class="op">=</span><span class="st">"country"</span>, y<span class="op">=</span>indicator_code))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> lp.geom_bar(lp.aes(fill<span class="op">=</span><span class="st">"country"</span>), color<span class="op">=</span><span class="st">"black"</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, stat<span class="op">=</span><span class="st">"identity"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> lp.scale_x_discrete(limits<span class="op">=</span>country_order)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> lp.scale_fill_discrete()</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> lp.theme_minimal()</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> lp.theme(legend_position<span class="op">=</span><span class="st">"none"</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> lp.ggsize(<span class="dv">600</span>, <span class="dv">400</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> lp.labs(</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        subtitle<span class="op">=</span><span class="st">"Greenhouse gases (CO2-equivalent metric tons per capita, 2019)"</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"The USA leads the world on per-capita emissions"</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span><span class="st">""</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="the-oecd-api" class="level3">
-<h3 class="anchored" data-anchor-id="the-oecd-api">The OECD API</h3>
-<p>Sometimes it’s convenient to use APIs directly, and, as an example, the OECD API comes with a LOT of complexity that direct access can take advantage of. The OECD API makes data available in both JSON and XML formats, and we’ll use <a href="https://pandasdmx.readthedocs.io/"><strong>pandasdmx</strong></a> (aka the Statistical Data and Metadata eXchange (SDMX) package for the Python data ecosystem) to pull down the XML format data and turn it into a regular <strong>pandas</strong> data frame.</p>
-<p>Now, key to using the OECD API is knowledge of its many codes: for countries, times, resources, and series. You can find some broad guidance on what codes the API uses <a href="https://data.oecd.org/api/sdmx-ml-documentation/">here</a> but to find exactly what you need can be a bit tricky. Two tips are: 1. If you know what you’re looking for is in a particular named dataset, eg “QNA” (Quarterly National Accounts), put <code>https://stats.oecd.org/restsdmx/sdmx.ashx/GetDataStructure/QNA/all?format=SDMX-ML</code> into your browser and look through the XML file; you can pick out the sub-codes and the countries that are available. 2. Browse around on https://stats.oecd.org/ and use Customise then check all the “Use Codes” boxes to see whatever your browsing’s code names.</p>
-<p>Let’s see an example of this in action. We’d like to see the productivity (GDP per hour) data for a range of countries since 2010. We are going to be in the productivity resource (code “PDB_LV”) and we want the USD current prices (code “CPC”) measure of GDP per employed worker (code “T_GDPEMP) from 2010 onwards (code”startTime=2010”). We’ll grab this for some developed countries where productivity measurements might be slightly more comparable. The comments below explain what’s happening in each step.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandasdmx <span class="im">as</span> pdmx</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Tell pdmx we want OECD data</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>oecd <span class="op">=</span> pdmx.Request(<span class="st">"OECD"</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set out everything about the request in the format specified by the OECD API</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> oecd.data(</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    resource_id<span class="op">=</span><span class="st">"PDB_LV"</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    key<span class="op">=</span><span class="st">"GBR+FRA+CAN+ITA+DEU+JPN+USA.T_GDPEMP.CPC/all?startTime=2010"</span>,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>).to_pandas()</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).reset_index()</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="the-eurostat-sdmx-api" class="level3">
+<h3 class="anchored" data-anchor-id="the-eurostat-sdmx-api">The Eurostat SDMX API</h3>
+<p>Sometimes it’s convenient to use APIs directly. The Eurostat API provides access to a massive repository of European statistical data using the SDMX (Statistical Data and Metadata eXchange) standard. While Eurostat offers multiple formats, using the SDMX-ML (XML) format via the sdmx1 library allows us to pull structured data into the Python ecosystem with high precision.</p>
+<p>Key to using the Eurostat API is understanding the Data Structure Definition (DSD). Every dataset is essentially a multidimensional “cube” where each dimension (like Geography, Unit, or Frequency) has specific codes.</p>
+<p>To find the exact codes you need:</p>
+<p>The Data Browser: Browse the Eurostat Data Navigation Tree. Once you find a table (e.g., “HICP - monthly data”), the “Dataset Code” (like prc_hicp_manr) is shown in brackets.</p>
+<p>Positional Keys: Eurostat’s REST API expects a “key string” where codes are placed in a specific order separated by dots (e.g., Freq.Unit.Item.Geo). If you know the order, you can “slice” the data cube directly.</p>
+<p>Let’s see an example of this in action. We want to see the Harmonised Index of Consumer Prices (HICP)—specifically the annual rate of change for all items—for Germany and France. We will use the resource prc_hicp_manr, requesting Monthly frequency (M), the Annual Rate of Change unit (RCH_A), and the “All-items” classification (CP00).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sdmx</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Tell sdmx we want ESTAT data</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> sdmx.Client(<span class="st">'ESTAT'</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Build the URL-style positional key</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Format: [Freq].[Unit].[Coicop].[Geo]</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># We use '+' to join multiple countries (DE and FR)</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>resource_id <span class="op">=</span> <span class="st">'prc_hicp_manr'</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>key_string <span class="op">=</span> <span class="st">'M.RCH_A.CP00.DE+FR'</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Fetch the data directly</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 'startPeriod' limits the timeline to recent data</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> client.data(</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    resource_id<span class="op">=</span>resource_id,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    key<span class="op">=</span>key_string,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    params<span class="op">=</span>{<span class="st">'startPeriod'</span>: <span class="st">'2024-01'</span>}</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Convert the SDMX-ML response to a Polars DataFrame</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># We bridge through Pandas as sdmx1 is optimized for it</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>df_pd <span class="op">=</span> sdmx.to_pandas(response).to_frame(name<span class="op">=</span><span class="st">'value'</span>).reset_index()</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pl.from_pandas(df_pd)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.head())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <table class="caption-top table">
 <thead>
 <tr class="header">
 <th style="text-align: right;"></th>
-<th style="text-align: right;">LOCATION</th>
-<th style="text-align: right;">SUBJECT</th>
-<th style="text-align: right;">MEASURE</th>
 <th style="text-align: right;">TIME_PERIOD</th>
+<th style="text-align: left;">geo</th>
+<th style="text-align: left;">unit</th>
+<th style="text-align: left;">freq</th>
+<th style="text-align: left;">coicop</th>
 <th style="text-align: right;">value</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">CAN</td>
-<td style="text-align: right;">T_GDPEMP</td>
-<td style="text-align: right;">CPC</td>
-<td style="text-align: right;">2010</td>
-<td style="text-align: right;">78848.604088</td>
+<td style="text-align: right;">2024-01</td>
+<td style="text-align: left;">DE</td>
+<td style="text-align: left;">RCH_A</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">CP00</td>
+<td style="text-align: right;">3.1</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">CAN</td>
-<td style="text-align: right;">T_GDPEMP</td>
-<td style="text-align: right;">CPC</td>
-<td style="text-align: right;">2011</td>
-<td style="text-align: right;">81422.364748</td>
+<td style="text-align: right;">2024-02</td>
+<td style="text-align: left;">DE</td>
+<td style="text-align: left;">RCH_A</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">CP00</td>
+<td style="text-align: right;">2.7</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">CAN</td>
-<td style="text-align: right;">T_GDPEMP</td>
-<td style="text-align: right;">CPC</td>
-<td style="text-align: right;">2012</td>
-<td style="text-align: right;">82663.028058</td>
+<td style="text-align: right;">2024-03</td>
+<td style="text-align: left;">DE</td>
+<td style="text-align: left;">RCH_A</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">CP00</td>
+<td style="text-align: right;">2.3</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">3</td>
-<td style="text-align: right;">CAN</td>
-<td style="text-align: right;">T_GDPEMP</td>
-<td style="text-align: right;">CPC</td>
-<td style="text-align: right;">2013</td>
-<td style="text-align: right;">86368.582158</td>
+<td style="text-align: right;">2024-04</td>
+<td style="text-align: left;">DE</td>
+<td style="text-align: left;">RCH_A</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">CP00</td>
+<td style="text-align: right;">2.4</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4</td>
-<td style="text-align: right;">CAN</td>
-<td style="text-align: right;">T_GDPEMP</td>
-<td style="text-align: right;">CPC</td>
-<td style="text-align: right;">2014</td>
-<td style="text-align: right;">89617.632446</td>
+<td style="text-align: right;">2024-05</td>
+<td style="text-align: left;">DE</td>
+<td style="text-align: left;">RCH_A</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">CP00</td>
+<td style="text-align: right;">2.8</td>
 </tr>
 </tbody>
 </table>
@@ -875,32 +909,32 @@ Note
 <p>It’s always helpful to see coding in practice, so that’s what we’ll do now, but note that we’ll be skipping over a lot of important detail such as user agents, being ‘polite’ with your scraping requests, being efficient with caching and crawling.</p>
 <p>In lieu of a better example, let’s scrape the research page of <a href="http://aeturrell.com/">http://aeturrell.com/</a></p>
 <div id="073d89e3" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"http://aeturrell.com/research"</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>page <span class="op">=</span> requests.get(url)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>page.text[:<span class="dv">300</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"http://aeturrell.com/research"</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>page <span class="op">=</span> requests.get(url)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>page.text[:<span class="dv">300</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Okay, what just happened? We asked requests to grab the HTML of the webpage and then printed the first 300 characters of the text that it found.</p>
 <p>Let’s now parse this into something humans can read (or can read more easily) using beautifulsoup:</p>
 <div id="22f96be0" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>soup <span class="op">=</span> BeautifulSoup(page.text, <span class="st">"html.parser"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(soup.prettify()[<span class="dv">60000</span>:<span class="dv">60500</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>soup <span class="op">=</span> BeautifulSoup(page.text, <span class="st">"html.parser"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(soup.prettify()[<span class="dv">60000</span>:<span class="dv">60500</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now we see more structure of the page and even some <em>HTML tags</em> such as ‘title’ and ‘link’. Now we come to the data extraction part: say we want to pull out every paragraph of text, we can use beautifulsoup to skim down the HTML structure and pull out only those parts with the paragraph tag (‘p’).</p>
 <div id="d82775de" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all paragraphs</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>all_paras <span class="op">=</span> soup.find_all(<span class="st">"p"</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Just show one of the paras</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>all_paras[<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all paragraphs</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>all_paras <span class="op">=</span> soup.find_all(<span class="st">"p"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Just show one of the paras</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>all_paras[<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Although this paragraph isn’t too bad, you can make this more readable by stripping out HTML tags altogether with the <code>.text</code> method:</p>
 <div id="11321154" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>all_paras[<span class="dv">1</span>].text</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>all_paras[<span class="dv">1</span>].text</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Now let’s say we didn’t care about most of the page, we <em>only</em> wanted to get hold of the names of projects. For this we need to identify the tag type of the element we’re interested in, in this case ‘div’, and it’s class type, in this case “project-name”. We do it like this (and show nice text in the process):</p>
 <div id="feac1fdd" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>projects <span class="op">=</span> soup.find_all(<span class="st">"div"</span>, class_<span class="op">=</span><span class="st">"project-content listing-pub-info"</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>projects <span class="op">=</span> [x.text.strip() <span class="cf">for</span> x <span class="kw">in</span> projects]</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>projects</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>projects <span class="op">=</span> soup.find_all(<span class="st">"div"</span>, class_<span class="op">=</span><span class="st">"project-content listing-pub-info"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>projects <span class="op">=</span> [x.text.strip() <span class="cf">for</span> x <span class="kw">in</span> projects]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>projects</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Hooray! We managed to get the information we wanted: all we needed to know was the right tags. A good tip for finding the tags of the info you want is to look at in your browser (eg Google Chrome) and then right-click on the bit you’re interested in, then hit ‘Inspect’. This will show you the HTML element of the bit of the page you clicked on.</p>
 <p>That’s almost it for this very, very brief introduction to webscraping. We’ll just see one more thing: how to iterate over multiple pages.</p>
@@ -911,16 +945,19 @@ info_on_pages = [scraper(root_url + str(i)) for i in range(start, stop)]</code><
 <p>That’s all we’ll cover here but remember we’ve barely <em>scraped</em> the surface of this big, complex topic. If you want to read about an application, it’s hard not to recommend the paper on webscraping that has undoubtedly change the world the most, and very likely has affected your own life in numerous ways: <a href="http://ilpubs.stanford.edu:8090/422/">“The PageRank Citation Ranking: Bringing Order to the Web”</a> by Page, Brin, Motwani and Winograd. For a more in-depth example of webscraping, check out realpython’s <a href="https://realpython.com/python-web-scraping-practical-introduction/">tutorial</a>.</p>
 <section id="webscraping-tables" class="level3">
 <h3 class="anchored" data-anchor-id="webscraping-tables">Webscraping Tables</h3>
-<p>Often there are times when you don’t actually want to scrape an entire webpage and all you want is the data from a <em>table</em> within the page. Fortunately, there is an easy way to scrape individual tables using the <strong>pandas</strong> package.</p>
-<p>We will read data from a table on ‘https://webscraper.io/test-sites/tables’ using <strong>pandas</strong>. The function we’ll use is <code>read_html()</code>, which returns a list of data frames of all the tables it finds when you pass it a URL. If you want to filter the list of tables, use the <code>match=</code> keyword argument with text that only appears in the table(s) you’re interested in.</p>
-<p>The example below shows how this works; looking at the website, we can see that the table we’re interested in, has a ‘First Name’ column. Therefore we run:</p>
+<p>There are times when you don’t need to scrape an entire webpage; you simply want the structured data from a specific table. While Polars is a high-performance data engine, it focuses on strict data formats (like Parquet or CSV) and does not natively include an HTML parser. However, we can easily bridge this gap by using Pandas to fetch the table and then converting it into a Polars DataFrame.</p>
+<p>We will read data from ‘https://webscraper.io/test-sites/tables’ using <code>pd.read_html()</code>. This function scans the webpage and returns a list of all tables it finds as DataFrames. To target a specific table, we use the match= keyword argument with text that uniquely appears in the table we want—in this case, “First Name”.</p>
+<p>Once captured, we convert the result to Polars using pl.from_pandas() to take advantage of Polars’ superior query performance and expression API.</p>
 <div id="0ada9ce7" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df_list <span class="op">=</span> pd.read_html(<span class="st">"https://webscraper.io/test-sites/tables"</span>, match<span class="op">=</span><span class="st">"First Name"</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve first entry from list of data frames</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_list[<span class="dv">0</span>]</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>pd_list <span class="op">=</span> pd.read_html(<span class="st">"https://webscraper.io/test-sites/tables"</span>, match<span class="op">=</span><span class="st">"First Name"</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve first entry from list of data frames</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pl.from_pandas(pd_list[<span class="dv">0</span>])</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.head())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>This gives us the table neatly loaded into a <strong>pandas</strong> data frame ready for further use.</p>
+<p>This gives us the table neatly loaded into a <strong>polars</strong> data frame ready for further use.</p>
 <p>If you get a ‘403’ error, it means that the website has blocked <strong>pandas</strong> because it can see that you are engaged in web scraping. This is because some people web scrape irresponsibly, or because websites have provided other, preferred ways for you to obtain the data, eg via a download of the whole thing (think Wikipedia) or through an API. (If you really need to, <a href="https://stackoverflow.com/questions/43590153/http-error-403-forbidden-when-reading-html">you can often get around the 403 error</a> though.)</p>
 
 

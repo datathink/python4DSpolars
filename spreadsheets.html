@@ -647,12 +647,12 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <p>If you or your collaborators are using spreadsheets for organising data that will be ingested by an analytical tool like Python, we recommend reading the paper “Data Organization in Spreadsheets” by Karl Broman and Kara Woo {cite}<code>broman2018data</code>. The best practices presented in this paper will save you much headache down the line when you import the data from a spreadsheet into Python to analyse and visualise. (For spreadsheets that are meant to be read by humans, we recommend the <a href="https://github.com/best-practice-and-impact/gptables">good practice tables</a> package.)</p>
 <section id="prerequisites" class="level3">
 <h3 class="anchored" data-anchor-id="prerequisites">Prerequisites</h3>
-<p>You will need to install the <strong>pandas</strong> package for this chapter. You will also need to install the <strong>openpyxl</strong> package by running <code>uv add openpyxl</code> in the terminal.</p>
+<p>You will need the <strong>polars</strong> package for this chapter. Install <strong>fastexcel</strong> so <code>read_excel()</code> can use the default (fast) engine, <strong>xlsxwriter</strong> for <code>write_excel()</code>, and <strong>openpyxl</strong> if you want to use the <strong>openpyxl</strong> engine explicitly (<code>uv add fastexcel xlsxwriter openpyxl</code>).</p>
 </section>
 </section>
 <section id="reading-excel-and-similar-files" class="level2">
 <h2 class="anchored" data-anchor-id="reading-excel-and-similar-files">Reading Excel (and Similar) Files</h2>
-<p><strong>pandas</strong> can read in xls, xlsx, xlsm, xlsb, odf, ods, and odt files from your local filesystem or from a URL. It also supports an option to read a single sheet or a list of sheets.</p>
+<p><strong>polars</strong> can read in xls, xlsx, xlsm, xlsb, odf, ods, and odt files from your local filesystem or from a URL. It also supports an option to read a single sheet or a list of sheets. The default reader uses <strong>fastexcel</strong> (Rust-backed, via the <strong>fastexcel</strong> Python package); you can also select other engines such as <strong>openpyxl</strong> when you need engine-specific options.</p>
 <p>To show how this works, we’ll work with an example spreadsheet called “students.xlsx”. The figure below shows what the spreadsheet looks like.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -660,48 +660,56 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <figcaption>A look at the students spreadsheet in Excel. The spreadsheet contains information on 6 students, their ID, full name, favourite food, meal plan, and age.</figcaption>
 </figure>
 </div>
-<p>The first argument to <code>pd.read_excel()</code> is the path to the file to read. If you have downloaded the <a href="">file</a> onto your computer and put it in a subfolder called “data” then you would want to use the path “data/students.xlsx” but we can also load it directly from the URL.</p>
+<p>The first argument to <code>pl.read_excel()</code> is the path to the file to read. If you have downloaded the <a href="">file</a> onto your computer and put it in a subfolder called “data” then you would want to use the path “data/students.xlsx” but we can also load it directly from the URL.</p>
 <div id="bf00d4c6" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>students <span class="op">=</span> pd.read_excel(</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://github.com/aeturrell/python4DS/raw/main/data/students.xlsx"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>students <span class="op">=</span> pl.read_excel(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/students.xlsx"</span>,</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>students</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We have six students in the data and five variables on each student. However there are a few things we might want to address in this dataset:</p>
 <ul>
-<li>The column names are all over the place. You can provide column names that follow a consistent format; we recommend <code>snake_case</code> using the <code>names</code> argument.</li>
+<li>The column names are all over the place. You can rename them to follow a consistent format; we recommend <code>snake_case</code>. If you want to replace <strong>every</strong> column name in order, assigning to <code>students.columns</code> is clear and short. If you only rename some columns, use <code>.rename({"Old Name": "new_name", ...})</code> with the exact strings from the sheet.</li>
 </ul>
 <div id="ecce26ea" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pd.read_excel(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://github.com/aeturrell/python4DS/raw/main/data/students.xlsx"</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    names<span class="op">=</span>[<span class="st">"student_id"</span>, <span class="st">"full_name"</span>, <span class="st">"favourite_food"</span>, <span class="st">"meal_plan"</span>, <span class="st">"age"</span>],</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>students.columns <span class="op">=</span> [</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"student_id"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"full_name"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"favourite_food"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"meal_plan"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>students</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
-<li><code>age</code> is read in as a column of objects, but it really should be numeric. Just like with <code>read_csv()</code>, you can supply a <code>dtype</code> argument to <code>read_excel()</code> and specify the data types for the columns of data you read in. Your options include <code>"boolean"</code>, <code>"int"</code>, <code>"float"</code>, <code>"datetime"</code>, <code>"string"</code>, and more. But we can see right away that this isn’t going to work with the “age” column as it mixes numbers and text: so we first need to map its text to numbers.</li>
+<li><code>age</code> may be inferred as strings (for example <strong>Utf8</strong>) when the column mixes numeric values and text, but we want it numeric. Just like with <code>read_csv()</code>, you can supply a <code>schema_overrides</code> argument to <code>read_excel()</code> and specify Polars data types for the columns you read in (for example <code>pl.Int64</code>, <code>pl.Utf8</code>, <code>pl.Boolean</code>, <code>pl.Datetime</code>, and more). That still will not fix a value like <code>"five"</code> until we map it to a number first.</li>
 </ul>
 <div id="22e45cc2" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>students <span class="op">=</span> pd.read_excel(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/students.xlsx"</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    names<span class="op">=</span>[<span class="st">"student_id"</span>, <span class="st">"full_name"</span>, <span class="st">"favourite_food"</span>, <span class="st">"meal_plan"</span>, <span class="st">"age"</span>],</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>students[<span class="st">"age"</span>] <span class="op">=</span> students[<span class="st">"age"</span>].replace(<span class="st">"five"</span>, <span class="dv">5</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>students</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>students <span class="op">=</span> pl.read_excel(<span class="st">"data/students.xlsx"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>students.columns <span class="op">=</span> [</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"student_id"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"full_name"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"favourite_food"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"meal_plan"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>students <span class="op">=</span> students.with_columns(pl.col(<span class="st">"age"</span>).replace({<span class="st">"five"</span>: <span class="dv">5</span>}))</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>students</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Okay, now we can apply the data types.</p>
 <div id="f67490d3" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>students <span class="op">=</span> students.astype(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    {</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"student_id"</span>: <span class="st">"Int64"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"full_name"</span>: <span class="st">"string"</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"favourite_food"</span>: <span class="st">"string"</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"meal_plan"</span>: <span class="st">"category"</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"age"</span>: <span class="st">"Int64"</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    }</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>students <span class="op">=</span> students.with_columns(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"student_id"</span>).cast(pl.Int64),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"full_name"</span>).cast(pl.Utf8),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"favourite_food"</span>).cast(pl.Utf8),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"meal_plan"</span>).cast(pl.Categorical),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"age"</span>).cast(pl.Int64),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    ]</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>students.info()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>students.schema</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>It took multiple steps and trial-and-error to load the data in exactly the format we want, and this is not unexpected. Data science is an iterative process. There is no way to know exactly what the data will look like until you load it and take a look at it. The general pattern we used is load the data, take a peek, make adjustments to your code, load it again, and repeat until you’re happy with the result.</p>
 <section id="reading-individual-sheets" class="level3">
@@ -715,17 +723,17 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 </div>
 <p>You can read a single sheet using the following command (so as not to show the whole file, we’ll use <code>.head()</code> to just show the first 5 rows):</p>
 <div id="e37f9e3d" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>pd.read_excel(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://github.com/aeturrell/python4DS/raw/main/data/penguins.xlsx"</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>pl.read_excel(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/penguins.xlsx"</span>,</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    sheet_name<span class="op">=</span><span class="st">"Torgersen Island"</span>,</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>).head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Now this relies on us knowing the names of the sheets in advance. There will be situations where you can to read in data without peeking into the Excel spreadsheet. To read all sheets in, use <code>sheet_name=None</code>. The object that’s created is a dictionary with key value pairs that are sheet names and data frames respectively. Let’s look at the second key value pair (note that we have to convert the keys() and values() objects to list to then retrieve the second element of each using a subscript, ie <code>list(dictionary.keys())[&lt;element number&gt;]</code>).</p>
+<p>Now this relies on us knowing the names of the sheets in advance. There will be situations where you want to read in data without peeking into the Excel spreadsheet. To read all sheets in Polars, use <code>sheet_id=0</code> (or <code>sheet_name=None</code>, which also works in recent versions of Polars). The object that’s created is a dictionary where the keys are the sheet names and the values are Polars DataFrames. To access a specific sheet, you can convert the keys() or values() to a list and then index into it, ie <code>list(dictionary.keys())[&lt;element number&gt;]</code> .</p>
 <p>To give a sense of how this works, let’s first print all of the retrieved keys:</p>
 <div id="0f3a3b78" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>penguins_dict <span class="op">=</span> pd.read_excel(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://github.com/aeturrell/python4DS/raw/main/data/penguins.xlsx"</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    sheet_name<span class="op">=</span><span class="va">None</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>penguins_dict <span class="op">=</span> pl.read_excel(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/penguins.xlsx"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    sheet_id<span class="op">=</span><span class="dv">0</span>,</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>([x <span class="cf">for</span> x <span class="kw">in</span> penguins_dict.keys()])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -734,9 +742,9 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">list</span>(penguins_dict.keys())[<span class="dv">1</span>])</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(penguins_dict.values())[<span class="dv">1</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>What we really want is these three <em>consistent</em> datasets to be in the <em>same</em> single data frame. For this, we can use the <code>pd.concat()</code> function. This concatenates any given iterable of data frames.</p>
+<p>What we really want is these three <em>consistent</em> datasets to be in the <em>same</em> single data frame. For this, we can use the <code>pl.concat()</code> function. This concatenates any given iterable of data frames.</p>
 <div id="151ba846" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> pd.concat(penguins_dict.values(), axis<span class="op">=</span><span class="dv">0</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> pl.concat(penguins_dict.values())</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>penguins</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
@@ -751,13 +759,19 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 </figure>
 </div>
 <p>This spreadsheet can be downloaded from <a href="https://github.com/aeturrell/python4DS/tree/main/data">here</a> or you can load it directly from a URL. If you want to load it from your own computer’s disk, you’ll need to save it in a sub-folder called “data” first.</p>
-<p>The top three rows and the bottom four rows are not part of the data frame. We could skip the top three rows with <code>skiprows</code>. Note that we set <code>skiprows=4</code> since the fourth row contains column names, not the data.</p>
+<p>The top three rows and the bottom four rows are not part of the data frame. We could skip the top three rows by passing <code>read_options</code> to <code>read_excel()</code>. Note that we set <code>skip_rows=4</code> since the fourth row contains column names, not the data.</p>
 <div id="29987b9d" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pd.read_excel(<span class="st">"data/deaths.xlsx"</span>, skiprows<span class="op">=</span><span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pl.read_excel(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/deaths.xlsx"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    read_options<span class="op">=</span>{<span class="st">"skip_rows"</span>: <span class="dv">4</span>},</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>We could also set <code>nrows</code> to omit the extraneous rows at the bottom (another option would to be to skip a set number of rows at the end using <code>skipfooter</code>).</p>
+<p>We could also set <code>n_rows</code> inside <code>read_options</code> to omit the extraneous rows at the bottom (another option would be to skip a set number of rows at the end using <code>skip_footer</code> in <code>read_options</code>, depending on the engine).</p>
 <div id="9d7a3db3" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pd.read_excel(<span class="st">"data/deaths.xlsx"</span>, skiprows<span class="op">=</span><span class="dv">4</span>, nrows<span class="op">=</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pl.read_excel(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/deaths.xlsx"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    read_options<span class="op">=</span>{<span class="st">"skip_rows"</span>: <span class="dv">4</span>, <span class="st">"n_rows"</span>: <span class="dv">10</span>},</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -773,19 +787,24 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <li><p>A currency, which allows numeric values in a limited range and four decimal digits of fixed precision</p></li>
 </ul>
 <p>When working with spreadsheet data, it’s important to keep in mind that how the underlying data is stored can be very different than what you see in the cell. For example, Excel has no notion of an integer. All numbers are stored as floating points (real number), but you can choose to display the data with a customizable number of decimal points. Similarly, dates are actually stored as numbers, specifically the number of seconds since January 1, 1970. You can customize how you display the date by applying formatting in Excel. Confusingly, it’s also possible to have something that looks like a number but is actually a string (e.g.&nbsp;type <code>'10</code> into a cell in Excel).</p>
-<p>These differences between how the underlying data are stored vs.&nbsp;how they’re displayed can cause surprises when the data are loaded into analytical tools such as <strong>pandas</strong>. By default, <strong>pandas</strong> will guess the data type in a given column. A recommended workflow is to let <strong>pandas</strong> guess the column types initially, inspect them, and then change any data types that you want to.</p>
+<p>These differences between how the underlying data are stored vs.&nbsp;how they’re displayed can cause surprises when the data are loaded into analytical tools such as <strong>polars</strong>. By default, <strong>polars</strong> will guess the data type in a given column. A recommended workflow is to let <strong>polars</strong> guess the column types initially, inspect them, and then change any data types that you want to.</p>
 </section>
 <section id="writing-to-excel" class="level2">
 <h2 class="anchored" data-anchor-id="writing-to-excel">Writing to Excel</h2>
 <p>Let’s create a small data frame that we can then write out. Note that <code>item</code> is a category and <code>quantity</code> is an integer.</p>
 <div id="15963e18" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bake_sale <span class="op">=</span> pd.DataFrame(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"item"</span>: pd.Categorical([<span class="st">"brownie"</span>, <span class="st">"cupcake"</span>, <span class="st">"cookie"</span>]), <span class="st">"quantity"</span>: [<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">8</span>]}</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>bake_sale</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bake_sale <span class="op">=</span> pl.DataFrame(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"item"</span>: pl.Series([<span class="st">"brownie"</span>, <span class="st">"cupcake"</span>, <span class="st">"cookie"</span>], dtype<span class="op">=</span>pl.Categorical),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"quantity"</span>: [<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">8</span>],</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>bake_sale</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>You can write data back to disk as an Excel file using the <code>&lt;dataframe&gt;.to_excel()</code> function. The <code>index=False</code> keyword argument just writes the two columns without the index that was automatically added in the last step.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bake_sale.to_excel(<span class="st">"data/bake_sale.xlsx"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You can write data back to disk as an Excel file using the <code>&lt;dataframe&gt;.write_excel()</code> method. Polars does not use a row index like pandas, so only the columns in the DataFrame are written by default.</p>
+<div id="1fc17141" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bake_sale.write_excel(<span class="st">"data/bake_sale.xlsx"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <p>The figure below shows what the data looks like in Excel.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -793,9 +812,9 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <figcaption>Bake sale data frame created earlier in Excel.</figcaption>
 </figure>
 </div>
-<p>Just like reading from a CSV, information on data type is lost when we read the data back in—you can see this is you read the data back in and check the <code>info</code> for the data types. Although we kept <code>int64</code> because <strong>pandas</strong> recognise that the second column was of integer type, we lost the categorical data type for “item”. This data type loss makes Excel files unreliable for caching interim results.</p>
+<p>Just like reading from a CSV, information on data type is lost when we read the data back in—you can see this if you read the data back in and check the <code>schema</code> for the data types. Although we kept <code>Int64</code> because <strong>polars</strong> recognised that the second column was of integer type, we lost the categorical data type for “item”. This data type loss makes Excel files unreliable for caching interim results.</p>
 <div id="27e128f9" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pd.read_excel(<span class="st">"data/bake_sale.xlsx"</span>).info()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pl.read_excel(<span class="st">"data/bake_sale.xlsx"</span>).schema</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="formatted-output" class="level3">
 <h3 class="anchored" data-anchor-id="formatted-output">Formatted Output</h3>

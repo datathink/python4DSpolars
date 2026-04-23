@@ -617,7 +617,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
   <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a></li>
   </ul></li>
   <li><a href="#exploring-sql-databases-with-datasette" id="toc-exploring-sql-databases-with-datasette" class="nav-link" data-scroll-target="#exploring-sql-databases-with-datasette">Exploring SQL Databases with <strong>Datasette</strong></a></li>
-  <li><a href="#sql-with-pandas" id="toc-sql-with-pandas" class="nav-link" data-scroll-target="#sql-with-pandas">SQL with <strong>pandas</strong></a></li>
+  <li><a href="#sql-with-polars" id="toc-sql-with-polars" class="nav-link" data-scroll-target="#sql-with-polars">SQL with <strong>polars</strong></a></li>
   <li><a href="#sql-with-ibis" id="toc-sql-with-ibis" class="nav-link" data-scroll-target="#sql-with-ibis">SQL with <strong>ibis</strong></a></li>
   <li><a href="#sql-with-sqlmodel" id="toc-sql-with-sqlmodel" class="nav-link" data-scroll-target="#sql-with-sqlmodel">SQL with <strong>SQLModel</strong></a>
   <ul class="collapse">
@@ -657,7 +657,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <p>In this chapter, you’ll first learn the basics of Python packages that can interact with SQL databses: how to use them to connect to a database and then retrieve data with a SQL<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> query. <strong>SQL</strong>, short for <strong>s</strong>tructured <strong>q</strong>uery <strong>l</strong>anguage, is the lingua franca of databases, and is an important language for all data scientists to learn. You won’t become a SQL master by the end of the chapter, but you will be able to identify the most important components and understand what they do.</p>
 <section id="prerequisites" class="level3">
 <h3 class="anchored" data-anchor-id="prerequisites">Prerequisites</h3>
-<p>You will need the <strong>pandas</strong>, <strong>SQLModel</strong>, and <strong>ibis</strong> packages for this chapter. You probably already have <strong>pandas</strong> installed; to install <strong>SQLModel</strong> and <strong>ibis</strong> respectively run <code>uv add sqlmodel</code> and <code>uv add ibis-framework</code> on your computer’s command line. First, let’s bring in some general packages and turn off verbose warnings.</p>
+<p>You will need the <strong>polars</strong>, <strong>SQLModel</strong>, and <strong>ibis</strong> packages for this chapter. You probably already have <strong>polars</strong> installed; to install <strong>SQLModel</strong> and <strong>ibis</strong> respectively run <code>uv add sqlmodel</code> and <code>uv add ibis-framework</code> on your computer’s command line. First, let’s bring in some general packages and turn off verbose warnings.</p>
 <div id="9e54fbf6" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
@@ -668,7 +668,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 </section>
 <section id="database-basics" class="level2">
 <h2 class="anchored" data-anchor-id="database-basics">Database Basics</h2>
-<p>At the simplest level, you can think about a database as a collection of data frames, called <strong>tables</strong> in database terminology. Like a <strong>pandas</strong> data frame, a database table is a collection of named columns, where every value in the column is the same type. There are three high level differences between data frames and database tables:</p>
+<p>At the simplest level, you can think about a database as a collection of data frames, called <strong>tables</strong> in database terminology. Like a <strong>Polars</strong> DataFrame, a database table is a collection of named columns, where every value in a column shares the same data type. There are three high-level differences between data frames and database tables:</p>
 <ul>
 <li><p>Database tables are stored on disk (ie on file) and can be arbitrarily large. Data frames are stored in memory, and are fundamentally limited (although that limit is still big enough for many problems). You can think about the difference between on disk and in memory as being like the difference between long-term and short-term memory (and you have much more limited capacity in the latter).</p></li>
 <li><p>Database tables almost always have indexes. Much like the index of a book, a database index makes it possible to quickly find rows of interest without having to look at every single row.</p></li>
@@ -687,7 +687,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <p>We will always need two steps though, regardless of what kind of SQL database we are connecting to:</p>
 <ul>
 <li><p>You’ll always use a database interface that provides a connection to the database, for example Python’s built-in <strong>sqlite</strong> package</p></li>
-<li><p>You’ll also use a package that pushes and/or pulls data to/from the database, for example <strong>pandas</strong></p></li>
+<li><p>You’ll also use a package that pushes and/or pulls data to/from the database, for example <strong>polars</strong></p></li>
 </ul>
 <p>The precise details of the connection varies a lot from DBMS to DBMS so unfortunately we can’t cover all the details here. The initial setup will often take a little fiddling (and maybe some research) to get right, but you’ll generally only need to do it once. We’ll do the best we can to cover some basics here.</p>
 <p>Setting up a client-server or cloud DBMS would be a pain for this book, so we’ll instead use an in-computer DBMS.</p>
@@ -712,11 +712,13 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> cursor.fetchall()</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>rows</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Note that the output here is in the form a Python object called a tuple. If we wanted to put this into a <strong>pandas</strong> data frame, we can just pass it straight in:</p>
+<p>Note that the output here is in the form of a Python object called a tuple. If we want to convert this into a <strong>Polars</strong> DataFrame, we can pass it to <code>pl.DataFrame()</code>. When working with tuples, you may need to provide column names using the <strong>schema</strong> argument or specify <strong>orient=“row”</strong> so Polars correctly interprets the structure.</p>
 <div id="c5871b6e" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(rows)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pl.DataFrame(rows, orient<span class="op">=</span><span class="st">"row"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Another useful hint is that if you’re not sure what the column names are, you can obtain them from:</p>
 <div id="62791eab" class="cell">
@@ -773,8 +775,8 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 </div>
 <section id="joins" class="level3">
 <h3 class="anchored" data-anchor-id="joins">Joins</h3>
-<p>If you’re familiar with joins in <strong>pandas</strong>, SQL joins are very similar. Let’s see if we can join the ‘album’ and ‘track’ tables to find the <em>name</em> of the albums in the above query.</p>
-<p>Note that as soon as we have the <em>same</em> column names in more than one table, we need to specify the table we are referring to when we use that column name. There are different options for joins (eg <code>INNER</code>, <code>LEFT</code>) that you can find out more about <a href="https://en.wikipedia.org/wiki/Join_(SQL)">here</a>.</p>
+<p>If you’re familiar with joins in <strong>polars</strong>, SQL joins are very similar. Let’s see if we can join the ‘album’ and ‘track’ tables to find the <em>name</em> of the albums in the above query.</p>
+<p>In polars, you use the <code>df.join()</code> method, which defaults to an “inner” join. Note that if you have the same column names in both tables, Polars will often append a suffix (like _right) to the duplicate names to keep them distinct, unless you specify otherwise. There are different options for joins (eg <code>INNER</code>, <code>LEFT</code>) that you can find out more about <a href="https://en.wikipedia.org/wiki/Join_(SQL)">here</a>.</p>
 <div id="9824b70a" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sql_join <span class="op">=</span> <span class="st">"SELECT track.albumid, AVG(milliseconds)/1e3/60, album.title FROM track INNER JOIN album ON (track.albumid = album.albumid) GROUP BY album.albumid ORDER BY AVG(milliseconds) ASC LIMIT 5;"</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>cursor <span class="op">=</span> con.execute(sql_join)</span>
@@ -832,18 +834,21 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 </div>
 </div>
 </section>
-<section id="sql-with-pandas" class="level2">
-<h2 class="anchored" data-anchor-id="sql-with-pandas">SQL with <strong>pandas</strong></h2>
-<p><strong>pandas</strong> is well-equipped for working with SQL. We can simply push the query we just created straight through using its <code>read_sql()</code> function—but bear in mind we need to pass in the connection we created to the database too:</p>
+<section id="sql-with-polars" class="level2">
+<h2 class="anchored" data-anchor-id="sql-with-polars">SQL with <strong>polars</strong></h2>
+<p><strong>polars</strong> is well-equipped for working with SQL. We can simply push the query we just created straight through using its <code>read_database()</code> function—but bear in mind we need to pass in the connection we created to the database too:</p>
 <div id="f5c83909" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pd.read_sql(sql_join, con)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pl.read_database(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    query<span class="op">=</span>sql_join,  <span class="co"># your SQL query (string)</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    connection<span class="op">=</span>con,  <span class="co"># your connection object (SQLAlchemy, psycopg2 cursor, etc.)</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>One nice feature of this is that the column names in SQL get passed straight to the column names in our data frame.</p>
 <p>Now, when you’re writing Python in Visual Studio Code (at least with the Python extensions installed), you get a lot of high quality syntax and auto-completion support. Extensions to the Python language also allow you to take a great deal of care over the types of variables that you are dealing with. Wouldn’t it be nice to have all of that with SQL too (even when accessing it via Python)? The next two packages we’ll look at provide that. Both make working with SQL databases from Python a lot easier and more productive.</p>
 </section>
 <section id="sql-with-ibis" class="level2">
 <h2 class="anchored" data-anchor-id="sql-with-ibis">SQL with <strong>ibis</strong></h2>
-<p>It’s not exactly satisfactory to have to write out your SQL queries in text. What if we could create commands directly from <strong>pandas</strong> commands? You can’t <em>quite</em> do that, but there’s a package that gets you pretty close and it’s called <a href="https://ibis-project.org/"><strong>ibis</strong></a>. <strong>ibis</strong> is particularly useful when you are reading from a database and want to query it just like you would a <strong>pandas</strong> data frame.</p>
+<p>It’s not exactly satisfactory to have to write out your SQL queries in text. What if we could create commands directly from <strong>polars</strong> commands? You can’t <em>quite</em> do that, but there’s a package that gets you pretty close and it’s called <a href="https://ibis-project.org/"><strong>ibis</strong></a>. <strong>ibis</strong> is particularly useful when you are reading from a database and want to query it just like you would a <strong>polars</strong> data frame.</p>
 <p><strong>Ibis</strong> can connect to local databases (eg a SQLite database), server-based databases (eg Postgres), or cloud-based databased (eg Google’s BigQuery). The syntax to make a connection is, for example, <code>ibis.bigquery.connect</code>.</p>
 <p>Let’s see <strong>ibis</strong> in action by reproducing the commands we’ve already seen on the Chinook database, a locally hosted database. First we import it and make a connection to the database.</p>
 <div id="fc89c429" class="cell">
@@ -854,7 +859,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>track <span class="op">=</span> connection.table(<span class="st">"track"</span>)</span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>track.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Okay, now let’s reproduce the following query: “SELECT albumid, AVG(milliseconds)/1e3/60 FROM track GROUP BY albumid ORDER BY AVG(milliseconds) ASC LIMIT 5;”. We’ll use a groupby, a mutate (which you can think of like <strong>pandas</strong>’ assign statement), a sort, and then <code>limit()</code> to only show the first five entries.</p>
+<p>Okay, now let’s reproduce the following query: “SELECT albumid, AVG(milliseconds)/1e3/60 FROM track GROUP BY albumid ORDER BY AVG(milliseconds) ASC LIMIT 5;”. We’ll use a group_by, a mutate (which you can think of like <strong>polars</strong> assign statement), a sort, and then <code>limit()</code> to only show the first five entries.</p>
 <div id="5e5a482b" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>track.group_by(<span class="st">"AlbumId"</span>).mutate(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    mean_mins_track<span class="op">=</span>track.Milliseconds.mean() <span class="op">/</span> <span class="fl">1e3</span> <span class="op">/</span> <span class="dv">60</span></span>
