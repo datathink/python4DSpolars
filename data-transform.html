@@ -316,7 +316,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Python for Data Science</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/aeturrell/python4DS" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/datathink/python4DSpolars" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
     </div>
@@ -619,9 +619,17 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
   <li><a href="#creating-new-columns" id="toc-creating-new-columns" class="nav-link" data-scroll-target="#creating-new-columns">Creating New Columns</a></li>
   <li><a href="#accessing-columns" id="toc-accessing-columns" class="nav-link" data-scroll-target="#accessing-columns">Accessing Columns</a></li>
   <li><a href="#renaming-columns" id="toc-renaming-columns" class="nav-link" data-scroll-target="#renaming-columns">Renaming Columns</a></li>
+  <li><a href="#re-ordering-columns" id="toc-re-ordering-columns" class="nav-link" data-scroll-target="#re-ordering-columns">Re-ordering Columns</a></li>
+  <li><a href="#column-and-row-exercises" id="toc-column-and-row-exercises" class="nav-link" data-scroll-target="#column-and-row-exercises">Column and Row Exercises</a></li>
+  </ul></li>
+  <li><a href="#grouping-and-applying-summary-statistics" id="toc-grouping-and-applying-summary-statistics" class="nav-link" data-scroll-target="#grouping-and-applying-summary-statistics">Grouping and applying summary statistics</a>
+  <ul class="collapse">
+  <li><a href="#grouping-and-aggregating" id="toc-grouping-and-aggregating" class="nav-link" data-scroll-target="#grouping-and-aggregating">Grouping and Aggregating</a></li>
+  <li><a href="#grouping-by-multiple-variables" id="toc-grouping-by-multiple-variables" class="nav-link" data-scroll-target="#grouping-by-multiple-variables">Grouping by multiple variables</a></li>
+  <li><a href="#groupby-exercises" id="toc-groupby-exercises" class="nav-link" data-scroll-target="#groupby-exercises">Groupby Exercises</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.dev/aeturrell/python4DS/blob/main/data-transform.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/aeturrell/python4DS/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.dev/datathink/python4DSpolars/blob/main/data-transform.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/datathink/python4DSpolars/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -904,19 +912,6 @@ Note
 <section id="manipulating-columns" class="level2">
 <h2 class="anchored" data-anchor-id="manipulating-columns">Manipulating Columns</h2>
 <p>This section will show you how to apply various operations you may need to columns in your data frame.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Some <strong>pandas</strong> operations can apply either to columns or rows, depending on the syntax used. For example, accessing values by position can be achieved in the same way for rows and columns via <code>.iloc</code> where to access the ith row you would use <code>df.iloc[i]</code> and to access the jth column you would use <code>df.iloc[:, j]</code> where <code>:</code> stands in for ‘any row’.</p>
-</div>
-</div>
 <section id="creating-new-columns" class="level3">
 <h3 class="anchored" data-anchor-id="creating-new-columns">Creating New Columns</h3>
 <p>Let’s now move on to creating new columns, either using new information or from existing columns. Given a data frame, <code>df</code>, creating a new column with the same value repeated is done by using <code>.with_columns()</code>, with an expression assigned to a column name. Here we use <code>pl.lit()</code> which returns an expression representing a literal value, 5 in our case.</p>
@@ -1012,7 +1007,7 @@ Note
 <p>Other <code>selectors</code> commands include <code>ends_with()</code>, <code>by_index()</code>, <code>first()</code>, <code>last()</code>, <code>duration()</code>, <code>numeric()</code>, <code>boolean()</code> and more</p>
 </section>
 <section id="renaming-columns" class="level3">
-<h3 class="anchored">Renaming Columns</h3>
+<h3 class="anchored" data-anchor-id="renaming-columns">Renaming Columns</h3>
 <p>We use the dedicated <code>rename()</code> function with a mapping, such as a dictionary or a lambda function. Dictionaries in Python consist of curly brackets with comma separated pairs of values where the first values maps into the second value. An example of a dictionary would be <code>{'old_col1': 'new_col1', 'old_col2': 'new_col2'}</code>. Let’s see this in practice (but note that we are not ‘saving’ the resulting data frame, just showing it—to save it, you’d need to add <code>df =</code> to the left-hand side of the code below).</p>
 <div id="5e5c0dd0" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>df.rename({<span class="st">"col3"</span>: <span class="st">"letters"</span>, <span class="st">"col4"</span>: <span class="st">"names"</span>, <span class="st">"col6"</span>: <span class="st">"fruit"</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1032,6 +1027,9 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <p>A <em>lambda function</em> is a small, anonymous function in Python that performs a single operation. It’s a shorthand way to create a function without using <code>def</code>.</p>
+</div>
+</div>
+</section>
 <section id="re-ordering-columns" class="level3">
 <h3 class="anchored" data-anchor-id="re-ordering-columns">Re-ordering Columns</h3>
 <p>By default, new columns are added to the right-hand side of the data frame. But you may have reasons to want the columns to appear in a particular order, or perhaps you’d just find it more convenient to have new columns on the left-hand side when there are many columns in a data frame (which happens a lot).</p>
@@ -1064,6 +1062,7 @@ Tip
 <li><p>Brainstorm as many ways as possible to select <code>dep_time</code>, <code>dep_delay</code>, <code>arr_time</code>, and <code>arr_delay</code> from <code>flights</code>.</p></li>
 <li><p>What happens if you include the name of a row or column multiple times when trying to select them?</p></li>
 </ol>
+</section>
 </section>
 <section id="grouping-and-applying-summary-statistics" class="level2">
 <h2 class="anchored" data-anchor-id="grouping-and-applying-summary-statistics">Grouping and applying summary statistics</h2>
@@ -1158,10 +1157,6 @@ Tip
 </ol>
 
 
-</section>
-</section>
-</div>
-</div>
 </section>
 </section>
 
@@ -1596,4 +1591,4 @@ Tip
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/aeturrell/python4DS/blob/main/data-transform.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/aeturrell/python4DS/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/datathink/python4DSpolars/blob/main/data-transform.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/datathink/python4DSpolars/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

@@ -315,7 +315,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Python for Data Science</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/aeturrell/python4DS" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/datathink/python4DSpolars" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
     </div>
@@ -610,7 +610,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
   <li><a href="#functions-are-for-humans-and-computers" id="toc-functions-are-for-humans-and-computers" class="nav-link" data-scroll-target="#functions-are-for-humans-and-computers">Functions are for humans and computers</a></li>
   <li><a href="#function-scope" id="toc-function-scope" class="nav-link" data-scroll-target="#function-scope">Function Scope</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.dev/aeturrell/python4DS/blob/main/functions.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/aeturrell/python4DS/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.dev/datathink/python4DSpolars/blob/main/functions.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/datathink/python4DSpolars/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -647,7 +647,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <p>As well as practical advice for writing functions, this chapter also gives you some suggestions for how to style your code. Good code style is like correct punctuation. Youcanmanagewithoutit, but it sure makes things easier to read! As with styles of punctuation, there are many possible variations. Here we present the style we use in our code, but the most important thing is to be consistent.</p>
 <section id="prerequisites" class="level3">
 <h3 class="anchored" data-anchor-id="prerequisites">Prerequisites</h3>
-<p>You will need the <strong>pandas</strong> and <strong>numpy</strong> packages for this chapter.</p>
+<p>You will need the <strong>polars</strong> and <strong>numpy</strong> packages for this chapter.</p>
 </section>
 </section>
 <section id="functions" class="level2">
@@ -738,22 +738,36 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <section id="when-should-you-write-a-function" class="level2">
 <h2 class="anchored" data-anchor-id="when-should-you-write-a-function">When should you write a function?</h2>
 <p>You should consider writing a function whenever you’ve copied and pasted a block of code more than twice (i.e.&nbsp;you now have three copies of the same code). For example, take a look at this code. What does it do?</p>
-<div id="7a744085" class="cell">
+<div id="43d10e40" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(np.random.normal(size<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>)), columns<span class="op">=</span>[<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>])</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pl.DataFrame(np.random.normal(size<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>)), schema<span class="op">=</span>[<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>])</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"a"</span>] <span class="op">=</span> (df[<span class="st">"a"</span>] <span class="op">-</span> df[<span class="st">"a"</span>].<span class="bu">min</span>()) <span class="op">/</span> (df[<span class="st">"a"</span>].<span class="bu">max</span>() <span class="op">-</span> df[<span class="st">"a"</span>].<span class="bu">min</span>())</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"b"</span>] <span class="op">=</span> (df[<span class="st">"b"</span>] <span class="op">-</span> df[<span class="st">"b"</span>].<span class="bu">min</span>()) <span class="op">/</span> (df[<span class="st">"b"</span>].<span class="bu">max</span>() <span class="op">-</span> df[<span class="st">"a"</span>].<span class="bu">min</span>())</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"c"</span>] <span class="op">=</span> (df[<span class="st">"c"</span>] <span class="op">-</span> df[<span class="st">"c"</span>].<span class="bu">min</span>()) <span class="op">/</span> (df[<span class="st">"c"</span>].<span class="bu">max</span>() <span class="op">-</span> df[<span class="st">"c"</span>].<span class="bu">min</span>())</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"d"</span>] <span class="op">=</span> (df[<span class="st">"d"</span>] <span class="op">-</span> df[<span class="st">"d"</span>].<span class="bu">min</span>()) <span class="op">/</span> (df[<span class="st">"d"</span>].<span class="bu">max</span>() <span class="op">-</span> df[<span class="st">"d"</span>].<span class="bu">min</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.with_columns(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        (</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>            (pl.col(<span class="st">"a"</span>) <span class="op">-</span> pl.col(<span class="st">"a"</span>).<span class="bu">min</span>()) <span class="op">/</span> (pl.col(<span class="st">"a"</span>).<span class="bu">max</span>() <span class="op">-</span> pl.col(<span class="st">"a"</span>).<span class="bu">min</span>())</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        ).alias(<span class="st">"a"</span>),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        (</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            (pl.col(<span class="st">"b"</span>) <span class="op">-</span> pl.col(<span class="st">"b"</span>).<span class="bu">min</span>()) <span class="op">/</span> (pl.col(<span class="st">"b"</span>).<span class="bu">max</span>() <span class="op">-</span> pl.col(<span class="st">"a"</span>).<span class="bu">min</span>())</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        ).alias(<span class="st">"b"</span>),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        (</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            (pl.col(<span class="st">"c"</span>) <span class="op">-</span> pl.col(<span class="st">"c"</span>).<span class="bu">min</span>()) <span class="op">/</span> (pl.col(<span class="st">"c"</span>).<span class="bu">max</span>() <span class="op">-</span> pl.col(<span class="st">"c"</span>).<span class="bu">min</span>())</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        ).alias(<span class="st">"c"</span>),</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        (</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            (pl.col(<span class="st">"d"</span>) <span class="op">-</span> pl.col(<span class="st">"d"</span>).<span class="bu">min</span>()) <span class="op">/</span> (pl.col(<span class="st">"d"</span>).<span class="bu">max</span>() <span class="op">-</span> pl.col(<span class="st">"d"</span>).<span class="bu">min</span>())</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        ).alias(<span class="st">"d"</span>),</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>You might be able to puzzle out that this rescales each column to have a range from 0 to 1. But did you spot the mistake? There was an error when copying-and-pasting the code for <code>df["b"]</code>: someone forgot to change an <code>a</code> to a <code>b</code>. Extracting repeated code out into a function is a good idea because it prevents you from making this type of mistake.</p>
+<p>You might be able to puzzle out that this rescales each column to have a range from 0 to 1. But did you spot the mistake? There was an error when copying-and-pasting the code for <code>"b"</code>: someone forgot to change an <code>a</code> to a <code>b</code>. Extracting repeated code out into a function is a good idea because it prevents you from making this type of mistake.</p>
 <p>To write a function you need to first analyse the code. How many inputs does it have?</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"a"</span>] <span class="op">-</span> df[<span class="st">"a"</span>].<span class="bu">min</span>() <span class="op">/</span> (df[<span class="st">"a"</span>].<span class="bu">max</span>() <span class="op">-</span> df[<span class="st">"a"</span>].<span class="bu">min</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This code only has one input: <code>df["a"]</code>. To make the inputs more clear, it’s a good idea to rewrite the code using temporary variables with general names. Here this code only requires a single numeric vector, so we’ll call it <code>x</code> and put it into a function.</p>
-<p>Functions begin with a def keyword for ‘define a function’. It then has a name, followed by brackets, (), which may contain function arguments and function keyword arguments. This is followed by a colon. The body of the function is then indented relative to the left-most text. Function arguments are defined in brackets following the name, with different inputs separated by commas. Any outputs are given with the return keyword, again with different variables separated by commas.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>pl.col(<span class="st">"a"</span>) <span class="op">-</span> pl.col(<span class="st">"a"</span>).<span class="bu">min</span>() <span class="op">/</span> (pl.col(<span class="st">"a"</span>).<span class="bu">max</span>() <span class="op">-</span> pl.col(<span class="st">"a"</span>).<span class="bu">min</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This code only has one input: <code>pl.col("a")</code>. To make the inputs more clear, it’s a good idea to rewrite the code using temporary variables with general names. In Polars, this code requires a column expression, so we’ll call it <code>x</code> and put it into a function.</p>
+<p>Functions begin with a def keyword for ‘define a function’. It then has a name, followed by brackets, (), which contain the function argument (our expression <code>x</code>). This is followed by a colon. The body of the function is then indented relative to the left-most text. Any outputs—which in this case will be a transformed expression—are given with the return keyword.</p>
 <p>So, in Python, functions have the form:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> name_of_function(<span class="op">&lt;</span>inputs<span class="op">&gt;</span>):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>code to carry out on inputs<span class="op">&gt;</span></span>
@@ -776,34 +790,38 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 </ol>
 <p>Note the overall process: we only made the function after we’d figured out how to make it work with a simple input. It’s easier to start with working code and turn it into a function; it’s harder to create a function and then try to make it work.</p>
 <p>At this point it’s a good idea to check your function with a few different inputs:</p>
-<div id="b72eafca" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>rescale(pd.Series([<span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">10</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="74834d90" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>rescale(pl.Series([<span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">10</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="edd018c7" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rescale(pd.Series([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, np.nan, <span class="dv">5</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="8a0e643e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rescale(pl.Series([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="va">None</span>, <span class="dv">5</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>As you write more and more functions you’ll eventually want to convert these informal, interactive tests into formal, automated tests. That process is called unit testing. Unfortunately, it’s beyond the scope of this book.</p>
 <p>We can simplify the original example now that we have a function:</p>
 <div id="ce066e4f" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"a"</span>] <span class="op">=</span> rescale(df[<span class="st">"a"</span>])</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"b"</span>] <span class="op">=</span> rescale(df[<span class="st">"b"</span>])</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"c"</span>] <span class="op">=</span> rescale(df[<span class="st">"c"</span>])</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"d"</span>] <span class="op">=</span> rescale(df[<span class="st">"d"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.with_columns(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        rescale(pl.col(<span class="st">"a"</span>)).alias(<span class="st">"a"</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        rescale(pl.col(<span class="st">"b"</span>)).alias(<span class="st">"b"</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        rescale(pl.col(<span class="st">"c"</span>)).alias(<span class="st">"c"</span>),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        rescale(pl.col(<span class="st">"d"</span>)).alias(<span class="st">"d"</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Compared to the original, this code is easier to understand and we’ve eliminated one class of copy-and-paste errors. There is still quite a bit of duplication since we’re doing the same thing to multiple columns; we can actually remove this too, but we’ll cover how to do that later in the book.</p>
 <p>Another advantage of functions is that if our requirements change, we only need to make the change in one place. For example, we might discover that some of our variables include infinite values, and <code>rescale()</code> (effectively) fails:</p>
-<div id="f503c36b" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rescale(pd.Series([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, np.inf, <span class="dv">5</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="f8b80894" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rescale(pl.Series([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="bu">float</span>(<span class="st">"inf"</span>), <span class="dv">5</span>], strict<span class="op">=</span><span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Because we’ve extracted the code into a function, we only need to make the fix in one place:</p>
-<div id="67c861b6" class="cell">
+<div id="cd63ddea" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rescale(x):</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> x.replace(np.inf, np.nan)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> x.cast(pl.Float64).replace(<span class="bu">float</span>(<span class="st">"inf"</span>), <span class="va">None</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    minimum <span class="op">=</span> x.<span class="bu">min</span>()</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (x <span class="op">-</span> minimum) <span class="op">/</span> (x.<span class="bu">max</span>() <span class="op">-</span> minimum)</span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>rescale(pd.Series([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, np.inf, <span class="dv">5</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>rescale(pl.Series([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="bu">float</span>(<span class="st">"inf"</span>), <span class="dv">5</span>], strict<span class="op">=</span><span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This is an important part of the “do not repeat yourself” (or DRY) principle. The more repetition you have in your code, the more places you need to remember to update when things change (and they always do!), and the more likely you are to create bugs over time.</p>
 </section>
@@ -826,7 +844,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>select_input()</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>checkbox_input()</span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>text_input()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>A good example of this design is the <strong>pandas</strong> package: if you don’t remember exactly which function you need to read in data, you can type <code>pd.read_</code> and jog your memory as the autocomplete brings up the options.</p>
+<p>A good example of this design is the <strong>polars</strong> package: if you don’t remember exactly which function you need to read in data, you can type <code>pl.read_</code> and jog your memory as the autocomplete brings up the options.</p>
 </section>
 <section id="function-scope" class="level2">
 <h2 class="anchored" data-anchor-id="function-scope">Function Scope</h2>
@@ -840,7 +858,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(str_variable)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This would raise an error, because as far as your general code is concerned <code>str_variable</code> doesn’t exist outside of the function. This is an example of a <em>local</em> variable, one that only exists within a function.</p>
 <p>If you want to create variables inside a function and have them persist, you need to explicitly pass them out using, for example <code>return str_variable</code> like this:</p>
-<div id="8725b986" class="cell">
+<div id="647da443" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> var_func():</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    str_variable <span class="op">=</span> <span class="st">"Hello World!"</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> str_variable</span>
@@ -851,7 +869,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 </div>
 <p><strong>Global</strong></p>
 <p>A variable declared outside of a function is known as a global variable because it is accessible everywhere:</p>
-<div id="b0a4fe15" class="cell">
+<div id="c5fb049d" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="st">"I'm a global variable"</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1297,4 +1315,4 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/aeturrell/python4DS/blob/main/functions.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/aeturrell/python4DS/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/datathink/python4DSpolars/blob/main/functions.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/datathink/python4DSpolars/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
