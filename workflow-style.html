@@ -602,6 +602,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
    
   <ul>
   <li><a href="#names" id="toc-names" class="nav-link active" data-scroll-target="#names">Names</a></li>
+  <li><a href="#whitespace" id="toc-whitespace" class="nav-link" data-scroll-target="#whitespace">Whitespace</a></li>
   <li><a href="#code-comments" id="toc-code-comments" class="nav-link" data-scroll-target="#code-comments">Code Comments</a></li>
   <li><a href="#line-width-and-line-continuation" id="toc-line-width-and-line-continuation" class="nav-link" data-scroll-target="#line-width-and-line-continuation">Line width and line continuation</a></li>
   <li><a href="#principles-of-clean-code" id="toc-principles-of-clean-code" class="nav-link" data-scroll-target="#principles-of-clean-code">Principles of Clean Code</a>
@@ -644,35 +645,41 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <h2 class="anchored" data-anchor-id="names">Names</h2>
 <p>First, names matter. Use meaningful names for variables, functions, or whatever it is you’re naming. Avoid abbreviations that you understand <em>now</em> but which will be unclear to others, or future you. For example, use <code>real_wage_hourly</code> over <code>re_wg_ph</code>. I know it’s tempting to use <code>temp</code> but you’ll feel silly later when you can’t for the life of you remember what <code>temp</code> does or is. A good trick when naming booleans (variables that are either true or false) is to use <code>is</code> followed by what the boolean variable refers to, for example <code>is_married</code>.</p>
 <p>As well as this general tip, Python has conventions on naming different kinds of variables. The naming convention for almost all objects is lower case separated by underscores, e.g.&nbsp;<code>a_variable=10</code> or ‘this_is_a_script.py’. This style of naming is also known as snake case. There are different naming conventions though—<a href="https://twitter.com/allison_horst">Allison Horst</a> made this fantastic cartoon of the different conventions that are in use.</p>
-<p><img src="https://github.com/aeturrell/coding-for-economists/raw/main/img/in_that_case.jpg" class="img-fluid" alt="Different naming conventions. Artwork by @allison_horst."> Different naming conventions. Artwork by @allison_horst.</p>
+<p><img src="https://github.com/aeturrell/coding-for-economists/raw/main/img/in_that_case.jpg" class="img-fluid" alt="Different naming conventions. Artwork by (allison_horst?)."> Different naming conventions. Artwork by @allison_horst.</p>
 <p>There are three exceptions to the snake case convention: classes, which should be in camel case, eg <code>ThisIsAClass</code>; constants, which are in capital snake case, eg <code>THIS_IS_A_CONSTANT</code>; and packages, which are typically without spaces or underscores and are lowercase <code>thisisapackage</code>.</p>
-<p>For some quick shortcuts to re-naming columns in <strong>pandas</strong> data frames or other string variables, try the unicode-friendly <a href="https://github.com/un33k/python-slugify"><strong>slugify</strong></a> library or the <code>clean_headers()</code> function from the <a href="https://docs.dataprep.ai/index.html"><strong>dataprep</strong></a> library.</p>
+<p>For some quick shortcuts to re-naming columns in <strong>polars</strong> data frames or other string variables, try the unicode-friendly <a href="https://github.com/un33k/python-slugify"><strong>slugify</strong></a> library or the <code>clean_headers()</code> function from the <a href="https://docs.dataprep.ai/index.html"><strong>dataprep</strong></a> library.</p>
 <p>The better named your variables, the clearer your code will be–and the fewer comments you will need to write!</p>
-<p>In summary: - use descriptive variable names that reveal your intention, eg <code>days_since_treatment</code> - avoid using ambiguous abbreviations in names, eg use <code>real_wage_hourly</code> over <code>rw_ph</code> - always use the same vocabulary, eg don’t switch from <code>worker_type</code> to <code>employee_type</code> - avoid ‘magic numbers’, eg numbers in your code that set a key parameter. Set these as named constants instead. Here’s an example: ```python import random</p>
-<pre><code># This is bad
-def roll():
-    return random.randint(0, 36)  # magic number!
-
-# This is good
-MAX_INT_VALUE = 36
-
-def roll():
-    return random.randint(0, MAX_INT_VALUE)</code></pre>
-<pre><code>- use verbs for function names, eg `get_regression()`
-- use consistent verbs for function names, don't use `get_score()` and `grab_results()` (instead use `get` for both)
-- variable names should be snake_case and all lowercase, eg `first_name`
-- class names should be CamelCase, eg `MyClass`
-- function names should be snake_case and all lowercase, eg `quick_sort()`
-- constants should be snake_case and all uppercase, eg `PI = 3.14159`
-- modules should have short, snake_case names and all lowercase, eg `pandas`
-- single quotes and double quotes are equivalent so pick one and be consistent—most automatic formatters prefer `"`
-
-## Whitespace
-
-Surrounding bits of code with whitespace can significantly enhance readability. One such convention is that functions should have two blank lines following their last line. Another is that assignments are separated by spaces
-
-```python
-this_is_a_var = 5</code></pre>
+<p>In summary:</p>
+<ul>
+<li><p>use descriptive variable names that reveal your intention, eg <code>days_since_treatment</code></p></li>
+<li><p>avoid using ambiguous abbreviations in names, eg use <code>real_wage_hourly</code> over <code>rw_ph</code></p></li>
+<li><p>always use the same vocabulary, eg don’t switch from <code>worker_type</code> to <code>employee_type</code></p></li>
+<li><p>avoid ‘magic numbers’, eg numbers in your code that set a key parameter. Set these as named constants instead. Here’s an example:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> random</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># This is bad</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> roll():</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> random.randint(<span class="dv">0</span>, <span class="dv">36</span>)  <span class="co"># magic number!</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># This is good</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  MAX_INT_VALUE <span class="op">=</span> <span class="dv">36</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> roll():</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> random.randint(<span class="dv">0</span>, MAX_INT_VALUE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>use verbs for function names, eg <code>get_regression()</code></p></li>
+<li><p>use consistent verbs for function names, don’t use <code>get_score()</code> and <code>grab_results()</code> (instead use <code>get</code> for both)</p></li>
+<li><p>variable names should be snake_case and all lowercase, eg <code>first_name</code></p></li>
+<li><p>class names should be CamelCase, eg <code>MyClass</code></p></li>
+<li><p>function names should be snake_case and all lowercase, eg <code>quick_sort()</code></p></li>
+<li><p>constants should be snake_case and all uppercase, eg <code>PI = 3.14159</code></p></li>
+<li><p>modules should have short, snake_case names and all lowercase, eg <code>pandas</code></p></li>
+<li><p>single quotes and double quotes are equivalent so pick one and be consistent—most automatic formatters prefer <code>"</code></p></li>
+</ul>
+</section>
+<section id="whitespace" class="level2">
+<h2 class="anchored" data-anchor-id="whitespace">Whitespace</h2>
+<p>Surrounding bits of code with whitespace can significantly enhance readability. One such convention is that functions should have two blank lines following their last line. Another is that assignments are separated by spaces</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>this_is_a_var <span class="op">=</span> <span class="dv">5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Another convention is that a space appears after a <code>,</code>, for example in the definition of a list we would have</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>list_var <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>rather than</p>
@@ -692,16 +699,15 @@ this_is_a_var = 5</code></pre>
 </figure>
 </div>
 <p>Finally, functions come with their own special type of comments called a doc string. Here’s an example that tells us all about the functions inputs and outputs, including the type of input and output (here a data frame, also known as <code>pd.DataFrame</code>).</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> round_dataframe(df: pd.DataFrame) <span class="op">-&gt;</span> pd.DataFrame:</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Rounds numeric columns in dataframe to 2 s.f.</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_numeric_mean(df: pl.DataFrame) <span class="op">-&gt;</span> pl.DataFrame:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Returns the mean of each numeric column in the DataFrame.</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">        df (pd.DataFrame): Input dataframe</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">        df (pl.DataFrame): Input dataframe</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">        pd.DataFrame: Dataframe with numbers rounded to 2 s.f.</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">        pl.DataFrame: Dataframe of mean value of each numeric column.</span></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> df.select_dtypes(<span class="st">"number"</span>):</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        df[col] <span class="op">=</span> df[col].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="bu">float</span>(<span class="ss">f'</span><span class="sc">{</span><span class="bu">float</span>(<span class="ss">f"</span><span class="sc">{</span>x<span class="sc">:.2g}</span><span class="ss">"</span>)<span class="sc">:g}</span><span class="ss">'</span>))</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    df_mean <span class="op">=</span> df.select(S.numeric()).mean()</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df_mean</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="line-width-and-line-continuation" class="level2">
 <h2 class="anchored" data-anchor-id="line-width-and-line-continuation">Line width and line continuation</h2>
@@ -715,9 +721,9 @@ this_is_a_var = 5</code></pre>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>When using <em>method chaining</em> (something you can see in action in <a href="data-transform"></a>) it’s necessary to put the chain inside parentheses and it’s good practice to use a new line for every method. The code snippet below gives an example of what good looks like:</p>
 <div id="f0f5bb37" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pl.DataFrame(</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>{</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"col0"</span>: [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"col1"</span>: [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
@@ -725,19 +731,20 @@ this_is_a_var = 5</code></pre>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"col3"</span>: [<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"b"</span>, <span class="st">"a"</span>],</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"col4"</span>: [<span class="st">"alpha"</span>, <span class="st">"gamma"</span>, <span class="st">"gamma"</span>, <span class="st">"gamma"</span>],</span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    },</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>[<span class="st">"row"</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">4</span>)],</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Chaining inside parentheses works</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> df.groupby([<span class="st">"col3"</span>, <span class="st">"col4"</span>]).agg({<span class="st">"col1"</span>: <span class="st">"count"</span>, <span class="st">"col2"</span>: <span class="st">"mean"</span>})</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Chaining inside parentheses works</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> df.group_by([<span class="st">"col3"</span>, <span class="st">"col4"</span>]).agg(</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"col1"</span>).count(), pl.col(<span class="st">"col2"</span>).mean()</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>And this is what <em>not</em> to do:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> df</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .groupby([<span class="st">"col3"</span>, <span class="st">"col4"</span>]).agg({<span class="st">"col1"</span>: <span class="st">"count"</span>, <span class="st">"col2"</span>: <span class="st">"mean"</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .group_by([<span class="st">"col3"</span>, <span class="st">"col4"</span>]).agg(pl.col(<span class="st">"col1"</span>).count(), pl.col(<span class="st">"col2"</span>).mean())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="principles-of-clean-code" class="level2">
 <h2 class="anchored" data-anchor-id="principles-of-clean-code">Principles of Clean Code</h2>
