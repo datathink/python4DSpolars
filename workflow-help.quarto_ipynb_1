@@ -41,7 +41,7 @@
       "cell_type": "code",
       "metadata": {},
       "source": [
-        "import pandas as pd\n",
+        "import polars as pl\n",
         "import numpy as np\n",
         "import watermark.watermark as watermark\n",
         "\n",
@@ -70,7 +70,7 @@
         "\n",
         "- **Packages** and their versions. These should be loaded at the top of the script, so it's easy to see which ones the example needs. By using **watermark** with the above configuration, you will also print the package versions. This is a good time to check that you're using the latest version of each package; it's possible you've discovered a bug that's been fixed since you installed or last updated the package.\n",
         "\n",
-        "- **Data**: as others won't be able to easily download the data you're working with, it's often best to create a small amount of data from code that still have the same problem as you're finding with your actual data. Between **numpy** and **pandas**, it's quite easy to generate data from code; here's an example:"
+        "- **Data**: as others won't be able to easily download the data you're working with, it's often best to create a small amount of data from code that still have the same problem as you're finding with your actual data. Between **numpy** and **polars**, it's quite easy to generate data from code; here's an example:"
       ],
       "id": "c4ac60b4"
     },
@@ -78,13 +78,12 @@
       "cell_type": "code",
       "metadata": {},
       "source": [
-        "df = pd.DataFrame(\n",
+        "df = pl.DataFrame(\n",
         "    data=np.reshape(range(36), (6, 6)),\n",
-        "    index=[\"a\", \"b\", \"c\", \"d\", \"e\", \"f\"],\n",
-        "    columns=[\"col\" + str(i) for i in range(6)],\n",
-        "    dtype=float,\n",
+        "    schema=[\"col\" + str(i) for i in range(6)],\n",
+        "    orient=\"row\",\n",
         ")\n",
-        "df[\"random_normal\"] = np.random.normal(size=6)\n",
+        "df = df.with_columns(pl.Series(\"random_normal\", np.random.normal(size=6)))\n",
         "df"
       ],
       "id": "d1e4562c",
