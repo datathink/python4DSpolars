@@ -145,11 +145,11 @@ For an example of a code output where the input is not shown, the code below wil
 ```{{python}}
 #| echo: false
 import polars as pl
-import seaborn as sns
 
-df = pl.from_pandas(sns.load_dataset("penguins"))
+df = pl.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/master/penguins.csv").drop_nulls(subset=["species", "island", "sex"])
 ct = df.group_by(["species", "island", "sex"]).agg(pl.len().alias("count"))
-ct.pivot(index="species", columns=["island", "sex"], values="count", aggregate_function="sum")
+ct = ct.with_columns(pl.concat_str(["island", "sex"], separator="_").alias("island_sex"))
+ct.pivot(index="species", on="island_sex", values="count", aggregate_function="sum")
 ```
 ````
 
@@ -188,9 +188,8 @@ For an example of a code output where the input is not shown, the code below wil
 #| echo: false
 from IPython.display import display, Markdown
 import polars as pl
-import seaborn as sns
 
-df = pl.from_pandas(sns.load_dataset("penguins"))
+df = pl.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/master/penguins.csv")
 big_pen = df["body_mass_g"].max()
 number = len(df)
 ```
