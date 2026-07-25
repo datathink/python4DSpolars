@@ -1550,20 +1550,20 @@ Name: money, dtype: float64</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>real_nums <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> np.random.random(size<span class="op">=</span><span class="dv">10</span>)</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>real_nums</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="21">
-<pre><code>array([56.27271422, 55.9140059 ,  1.09920548, 72.7277538 , 67.48309198,
-        7.22998348, 31.07117213, 39.97053841, 50.78981776, 80.1726362 ])</code></pre>
+<pre><code>array([52.26411334, 18.74249199, 99.35642866, 12.32739399, 64.73658853,
+       92.69457139, 82.96407387, 64.22550897, 96.59425639, 65.77158499])</code></pre>
 </div>
 </div>
 <div id="dc3608d6" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>np.ceil(real_nums)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="22">
-<pre><code>array([57., 56.,  2., 73., 68.,  8., 32., 40., 51., 81.])</code></pre>
+<pre><code>array([ 53.,  19., 100.,  13.,  65.,  93.,  83.,  65.,  97.,  66.])</code></pre>
 </div>
 </div>
 <div id="d577bb21" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>np.floor(real_nums)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="23">
-<pre><code>array([56., 55.,  1., 72., 67.,  7., 31., 39., 50., 80.])</code></pre>
+<pre><code>array([52., 18., 99., 12., 64., 92., 82., 64., 96., 65.])</code></pre>
 </div>
 </div>
 <p>Remember that you can always apply <strong>numpy</strong> functions to <strong>pandas</strong> data frame columns like so:</p>

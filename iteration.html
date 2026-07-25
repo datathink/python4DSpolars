@@ -982,40 +982,40 @@ execution complete</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td>-0.619306</td>
-<td>-0.618713</td>
-<td>1.007603</td>
-<td>-0.002872</td>
+<td>1.820339</td>
+<td>0.151898</td>
+<td>0.68888</td>
+<td>-0.551492</td>
 </tr>
 <tr class="even">
-<td>0.300825</td>
-<td>0.215313</td>
-<td>-2.032112</td>
-<td>0.632888</td>
+<td>1.523806</td>
+<td>0.293586</td>
+<td>0.875301</td>
+<td>0.185056</td>
 </tr>
 <tr class="odd">
-<td>0.198758</td>
-<td>-0.203053</td>
-<td>0.191226</td>
-<td>-0.780248</td>
+<td>-1.868947</td>
+<td>-0.555708</td>
+<td>0.665352</td>
+<td>0.636098</td>
 </tr>
 <tr class="even">
-<td>-1.352844</td>
-<td>-1.757731</td>
-<td>-0.662538</td>
-<td>-0.738035</td>
+<td>-0.578884</td>
+<td>-1.298526</td>
+<td>-1.188968</td>
+<td>0.210889</td>
 </tr>
 <tr class="odd">
-<td>-0.803006</td>
-<td>-0.988654</td>
-<td>0.66824</td>
-<td>0.815004</td>
+<td>0.764905</td>
+<td>-0.036629</td>
+<td>0.888739</td>
+<td>0.952502</td>
 </tr>
 <tr class="even">
-<td>-0.879324</td>
-<td>-1.692666</td>
-<td>-0.738014</td>
-<td>0.355693</td>
+<td>2.664783</td>
+<td>0.781417</td>
+<td>1.68281</td>
+<td>-1.506762</td>
 </tr>
 </tbody>
 </table>
@@ -1051,10 +1051,10 @@ execution complete</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td>-0.711156</td>
-<td>-0.803683</td>
-<td>-0.235656</td>
-<td>0.17641</td>
+<td>1.144355</td>
+<td>0.057635</td>
+<td>0.782091</td>
+<td>0.197972</td>
 </tr>
 </tbody>
 </table>
@@ -1083,22 +1083,22 @@ execution complete</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td>-0.310792</td>
+<td>0.420389</td>
 </tr>
 <tr class="even">
-<td>0.258069</td>
+<td>0.584444</td>
 </tr>
 <tr class="odd">
-<td>-0.005913</td>
+<td>0.040195</td>
 </tr>
 <tr class="even">
-<td>-1.045439</td>
+<td>-0.883926</td>
 </tr>
 <tr class="odd">
-<td>-0.067383</td>
+<td>0.826822</td>
 </tr>
 <tr class="even">
-<td>-0.808669</td>
+<td>1.232114</td>
 </tr>
 </tbody>
 </table>
@@ -1118,14 +1118,14 @@ execution complete</code></pre>
 <span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit add_five_slow(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>872 μs ± 37.5 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)</code></pre>
+<pre><code>459 μs ± 7.72 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)</code></pre>
 </div>
 </div>
 <p>But to do this, every individual cell must be accessed and operated on—so it is very slow, taking milliseconds. <strong>polars</strong> has far faster ways of performing the same operation. For simple operations on data frames with consistent type, you can simply add five to the whole data frame:</p>
 <div id="1a48ae52" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit df <span class="op">+</span> <span class="dv">5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>34.3 μs ± 2.24 μs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)</code></pre>
+<pre><code>52.7 μs ± 1.71 μs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)</code></pre>
 </div>
 </div>
 <p>This took tens of <em>microseconds</em>, much faster.</p>
@@ -1180,52 +1180,52 @@ execution complete</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td>40554.380694</td>
-<td>40554.381287</td>
-<td>40556.007603</td>
-<td>40554.997128</td>
-<td>40559.380694</td>
-<td>-6.720009</td>
+<td>40556.820339</td>
+<td>40555.151898</td>
+<td>40555.68888</td>
+<td>40554.448508</td>
+<td>40561.820339</td>
+<td>-4.437717</td>
 </tr>
 <tr class="even">
-<td>40555.300825</td>
-<td>40555.215313</td>
-<td>40552.967888</td>
-<td>40555.632888</td>
-<td>40560.300825</td>
-<td>-1.925698</td>
+<td>40556.523806</td>
+<td>40555.293586</td>
+<td>40555.875301</td>
+<td>40555.185056</td>
+<td>40561.523806</td>
+<td>-4.778987</td>
 </tr>
 <tr class="odd">
-<td>40555.198758</td>
-<td>40554.796947</td>
-<td>40555.191226</td>
-<td>40554.219752</td>
-<td>40560.198758</td>
-<td>-4.66975</td>
+<td>40553.131053</td>
+<td>40554.444292</td>
+<td>40555.665352</td>
+<td>40555.636098</td>
+<td>40558.131053</td>
+<td>-8.811196</td>
 </tr>
 <tr class="even">
-<td>40553.647156</td>
-<td>40553.242269</td>
-<td>40554.337462</td>
-<td>40554.261965</td>
-<td>40558.647156</td>
-<td>-6.922389</td>
+<td>40554.421116</td>
+<td>40553.701474</td>
+<td>40553.811032</td>
+<td>40555.210889</td>
+<td>40559.421116</td>
+<td>-6.409462</td>
 </tr>
 <tr class="odd">
-<td>40554.196994</td>
-<td>40554.011346</td>
-<td>40555.66824</td>
-<td>40555.815004</td>
-<td>40559.196994</td>
-<td>-6.934307</td>
+<td>40555.764905</td>
+<td>40554.963371</td>
+<td>40555.888739</td>
+<td>40555.952502</td>
+<td>40560.764905</td>
+<td>-5.881595</td>
 </tr>
 <tr class="even">
-<td>40554.120676</td>
-<td>40553.307334</td>
-<td>40554.261986</td>
-<td>40555.355693</td>
-<td>40559.120676</td>
-<td>-6.308305</td>
+<td>40557.664783</td>
+<td>40555.781417</td>
+<td>40556.68281</td>
+<td>40553.493238</td>
+<td>40562.664783</td>
+<td>-3.95772</td>
 </tr>
 </tbody>
 </table>
@@ -1267,51 +1267,51 @@ execution complete</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td>40554.380694</td>
-<td>40554.381287</td>
-<td>40556.007603</td>
-<td>40554.997128</td>
-<td>40559.380694</td>
+<td>40556.820339</td>
+<td>40555.151898</td>
+<td>40555.68888</td>
+<td>40554.448508</td>
+<td>40561.820339</td>
 <td>0.999877</td>
 </tr>
 <tr class="even">
-<td>40555.300825</td>
-<td>40555.215313</td>
-<td>40552.967888</td>
-<td>40555.632888</td>
-<td>40560.300825</td>
+<td>40556.523806</td>
+<td>40555.293586</td>
+<td>40555.875301</td>
+<td>40555.185056</td>
+<td>40561.523806</td>
 <td>0.999877</td>
 </tr>
 <tr class="odd">
-<td>40555.198758</td>
-<td>40554.796947</td>
-<td>40555.191226</td>
-<td>40554.219752</td>
-<td>40560.198758</td>
+<td>40553.131053</td>
+<td>40554.444292</td>
+<td>40555.665352</td>
+<td>40555.636098</td>
+<td>40558.131053</td>
 <td>0.999877</td>
 </tr>
 <tr class="even">
-<td>40553.647156</td>
-<td>40553.242269</td>
-<td>40554.337462</td>
-<td>40554.261965</td>
-<td>40558.647156</td>
+<td>40554.421116</td>
+<td>40553.701474</td>
+<td>40553.811032</td>
+<td>40555.210889</td>
+<td>40559.421116</td>
 <td>0.999877</td>
 </tr>
 <tr class="odd">
-<td>40554.196994</td>
-<td>40554.011346</td>
-<td>40555.66824</td>
-<td>40555.815004</td>
-<td>40559.196994</td>
+<td>40555.764905</td>
+<td>40554.963371</td>
+<td>40555.888739</td>
+<td>40555.952502</td>
+<td>40560.764905</td>
 <td>0.999877</td>
 </tr>
 <tr class="even">
-<td>40554.120676</td>
-<td>40553.307334</td>
-<td>40554.261986</td>
-<td>40555.355693</td>
-<td>40559.120676</td>
+<td>40557.664783</td>
+<td>40555.781417</td>
+<td>40556.68281</td>
+<td>40553.493238</td>
+<td>40562.664783</td>
 <td>0.999877</td>
 </tr>
 </tbody>
@@ -1355,56 +1355,56 @@ execution complete</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td>40554.380694</td>
-<td>40554.381287</td>
-<td>40556.007603</td>
-<td>40554.997128</td>
-<td>40559.380694</td>
+<td>40556.820339</td>
+<td>40555.151898</td>
+<td>40555.68888</td>
+<td>40554.448508</td>
+<td>40561.820339</td>
 <td>0.999877</td>
 <td>true</td>
 </tr>
 <tr class="even">
-<td>40555.300825</td>
-<td>40555.215313</td>
-<td>40552.967888</td>
-<td>40555.632888</td>
-<td>40560.300825</td>
+<td>40556.523806</td>
+<td>40555.293586</td>
+<td>40555.875301</td>
+<td>40555.185056</td>
+<td>40561.523806</td>
 <td>0.999877</td>
 <td>true</td>
 </tr>
 <tr class="odd">
-<td>40555.198758</td>
-<td>40554.796947</td>
-<td>40555.191226</td>
-<td>40554.219752</td>
-<td>40560.198758</td>
+<td>40553.131053</td>
+<td>40554.444292</td>
+<td>40555.665352</td>
+<td>40555.636098</td>
+<td>40558.131053</td>
 <td>0.999877</td>
 <td>true</td>
 </tr>
 <tr class="even">
-<td>40553.647156</td>
-<td>40553.242269</td>
-<td>40554.337462</td>
-<td>40554.261965</td>
-<td>40558.647156</td>
+<td>40554.421116</td>
+<td>40553.701474</td>
+<td>40553.811032</td>
+<td>40555.210889</td>
+<td>40559.421116</td>
 <td>0.999877</td>
 <td>true</td>
 </tr>
 <tr class="odd">
-<td>40554.196994</td>
-<td>40554.011346</td>
-<td>40555.66824</td>
-<td>40555.815004</td>
-<td>40559.196994</td>
+<td>40555.764905</td>
+<td>40554.963371</td>
+<td>40555.888739</td>
+<td>40555.952502</td>
+<td>40560.764905</td>
 <td>0.999877</td>
 <td>true</td>
 </tr>
 <tr class="even">
-<td>40554.120676</td>
-<td>40553.307334</td>
-<td>40554.261986</td>
-<td>40555.355693</td>
-<td>40559.120676</td>
+<td>40557.664783</td>
+<td>40555.781417</td>
+<td>40556.68281</td>
+<td>40553.493238</td>
+<td>40562.664783</td>
 <td>0.999877</td>
 <td>true</td>
 </tr>

@@ -905,7 +905,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <div id="a6bc5fe2" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nan_df.fillna(<span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\uchen\AppData\Local\Temp\ipykernel_10724\4054961691.py:1: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+<pre><code>C:\Users\uchen\AppData\Local\Temp\ipykernel_53268\4054961691.py:1: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
   nan_df.fillna(0)</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="7">
@@ -961,7 +961,7 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <div id="e65b67c2" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nan_df.fillna(value<span class="op">=</span>{<span class="st">"A"</span>: <span class="dv">0</span>, <span class="st">"B"</span>: <span class="dv">1</span>, <span class="st">"C"</span>: <span class="dv">2</span>, <span class="st">"D"</span>: <span class="dv">3</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\uchen\AppData\Local\Temp\ipykernel_10724\2397886090.py:1: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+<pre><code>C:\Users\uchen\AppData\Local\Temp\ipykernel_53268\2397886090.py:1: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
   nan_df.fillna(value={"A": 0, "B": 1, "C": 2, "D": 3})</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="8">
@@ -1017,9 +1017,9 @@ gtag('config', 'G-LXJC37BJVX', { 'anonymize_ip': true});
 <div id="2a19e196" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nan_df.fillna(method<span class="op">=</span><span class="st">"ffill"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\uchen\AppData\Local\Temp\ipykernel_10724\1353804149.py:1: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+<pre><code>C:\Users\uchen\AppData\Local\Temp\ipykernel_53268\1353804149.py:1: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
   nan_df.fillna(method="ffill")
-C:\Users\uchen\AppData\Local\Temp\ipykernel_10724\1353804149.py:1: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+C:\Users\uchen\AppData\Local\Temp\ipykernel_53268\1353804149.py:1: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
   nan_df.fillna(method="ffill")</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="9">
@@ -1074,9 +1074,9 @@ C:\Users\uchen\AppData\Local\Temp\ipykernel_10724\1353804149.py:1: FutureWarning
 <div id="8b5b001e" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nan_df.fillna(method<span class="op">=</span><span class="st">"bfill"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\uchen\AppData\Local\Temp\ipykernel_10724\2505504399.py:1: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+<pre><code>C:\Users\uchen\AppData\Local\Temp\ipykernel_53268\2505504399.py:1: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
   nan_df.fillna(method="bfill")
-C:\Users\uchen\AppData\Local\Temp\ipykernel_10724\2505504399.py:1: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+C:\Users\uchen\AppData\Local\Temp\ipykernel_53268\2505504399.py:1: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
   nan_df.fillna(method="bfill")</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="10">
@@ -1133,7 +1133,7 @@ C:\Users\uchen\AppData\Local\Temp\ipykernel_10724\2505504399.py:1: FutureWarning
 <div id="558e7a23" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nan_df.fillna(value<span class="op">=</span>{<span class="st">"A"</span>: <span class="dv">0</span>, <span class="st">"B"</span>: <span class="dv">1</span>, <span class="st">"C"</span>: <span class="dv">2</span>, <span class="st">"D"</span>: <span class="dv">3</span>}, limit<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\uchen\AppData\Local\Temp\ipykernel_10724\1730877720.py:1: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+<pre><code>C:\Users\uchen\AppData\Local\Temp\ipykernel_53268\1730877720.py:1: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
   nan_df.fillna(value={"A": 0, "B": 1, "C": 2, "D": 3}, limit=1)</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="11">
@@ -1659,7 +1659,7 @@ Name: count, dtype: int64</code></pre>
 <div id="efb6c6ab" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>health_cut.groupby(<span class="st">"smoker"</span>)[<span class="st">"age"</span>].mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\uchen\AppData\Local\Temp\ipykernel_10724\3998383890.py:1: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+<pre><code>C:\Users\uchen\AppData\Local\Temp\ipykernel_53268\3998383890.py:1: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
   health_cut.groupby("smoker")["age"].mean()</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="24">
