@@ -144,11 +144,12 @@ For an example of a code output where the input is not shown, the code below wil
 ````
 ```{{python}}
 #| echo: false
-import pandas as pd
-import seaborn as sns
+import polars as pl
 
-df = sns.load_dataset("penguins")
-pd.crosstab(df["species"], [df["island"], df["sex"]], margins=True)
+df = pl.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/master/penguins.csv").drop_nulls(subset=["species", "island", "sex"])
+ct = df.group_by(["species", "island", "sex"]).agg(pl.len().alias("count"))
+ct = ct.with_columns(pl.concat_str(["island", "sex"], separator="_").alias("island_sex"))
+ct.pivot(index="species", on="island_sex", values="count", aggregate_function="sum")
 ```
 ````
 
@@ -186,17 +187,16 @@ For an example of a code output where the input is not shown, the code below wil
 ```{{python}}
 #| echo: false
 from IPython.display import display, Markdown
-import pandas as pd
-import seaborn as sns
+import polars as pl
 
-df = sns.load_dataset("penguins")
+df = pl.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/master/penguins.csv")
 big_pen = df["body_mass_g"].max()
 number = len(df)
 ```
 
 ### The Heaviest Penguin
 
-We find that the heaviest penguin, out of a total of `python f"{number}"` penguins, has a mass of `python f"{big_pen:.2f}"` kilograms.
+We find that the heaviest penguin, out of a total of `python f"{number}"` penguins, has a mass of `python f"{big_pen:.2f}"` grams.
 
 ````
 

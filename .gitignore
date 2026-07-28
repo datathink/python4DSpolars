@@ -4,7 +4,7 @@
 # quarto
 _book/
 /.quarto/
-**/*.quarto_ipynb
+**/*.quarto_ipynb*
 _freeze/
 .panache*
 
@@ -137,3 +137,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+**/*.quarto_ipynb

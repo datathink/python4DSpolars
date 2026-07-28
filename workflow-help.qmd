@@ -30,7 +30,7 @@ A good reprex makes it easier for other people to help you, and often you'll fig
 - First, you need to make your code reproducible. This means that you need to capture everything, i.e., include any packages you used and create all necessary objects. The easiest way to make sure you've done this is to use the [**watermark**](https://github.com/rasbt/watermark) package alongside whatever else you are doing:
 
 ```{python}
-import pandas as pd
+import polars as pl
 import numpy as np
 import watermark.watermark as watermark
 
@@ -52,16 +52,15 @@ There are several things you need to include to make your example reproducible: 
 
 - **Packages** and their versions. These should be loaded at the top of the script, so it's easy to see which ones the example needs. By using **watermark** with the above configuration, you will also print the package versions. This is a good time to check that you're using the latest version of each package; it's possible you've discovered a bug that's been fixed since you installed or last updated the package.
 
-- **Data**: as others won't be able to easily download the data you're working with, it's often best to create a small amount of data from code that still have the same problem as you're finding with your actual data. Between **numpy** and **pandas**, it's quite easy to generate data from code; here's an example:
+- **Data**: as others won't be able to easily download the data you're working with, it's often best to create a small amount of data from code that still have the same problem as you're finding with your actual data. Between **numpy** and **polars**, it's quite easy to generate data from code; here's an example:
 
 ```{python}
-df = pd.DataFrame(
+df = pl.DataFrame(
     data=np.reshape(range(36), (6, 6)),
-    index=["a", "b", "c", "d", "e", "f"],
-    columns=["col" + str(i) for i in range(6)],
-    dtype=float,
+    schema=["col" + str(i) for i in range(6)],
+    orient="row",
 )
-df["random_normal"] = np.random.normal(size=6)
+df = df.with_columns(pl.Series("random_normal", np.random.normal(size=6)))
 df
 ```
 
